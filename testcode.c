@@ -76,7 +76,7 @@ struct ProcessInfo
     uid_t process_uid;
     gid_t process_gid;
     unsigned long long memory_usage;
-};
+}
 
 struct ProcessInfo get_process_info(pid_t pid)
 {
@@ -115,23 +115,27 @@ struct process_info
     int process_id;
     int process_uid;
     int process_gid;
-};
+}
 
 process_info get_process_info()
 {
-    process_info info;
-    std::ifstream stat_file("/proc/self/stat");
-    if (!stat_file)
+     
+    FILE *stat_file = fopen("/proc/self/stat", "r");
+    if (stat_file == NULL) {
+       
     {
-        std::cerr << "Fehler beim Öffnen der Statistik-Datei" << std::endl;
+       
+        fprintf(stderr, "Fehler beim Öffnen der Statistik-Datei\n");
         exit(1);
     }
-    stat_file >> info.process_id;
-    stat_file.ignore(256, ' ');
-    stat_file.ignore(256, ' ');
-    stat_file.ignore(256, ' ');
-    stat_file >> info.process_uid >> info.process_gid;
-    stat_file.close();
+
+    fscanf(stat_file, "%d", &info.process_id);
+    fseek(stat_file, 1, SEEK_CUR);  // Ignore a space character
+    fseek(stat_file, 1, SEEK_CUR);  // Ignore the second field
+    fseek(stat_file, 1, SEEK_CUR);  // Ignore the third field
+    fscanf(stat_file, "%d %d", &info.process_uid, &info.process_gid);
+    
+    fclose(stat_file);
     return info;
 }
 
