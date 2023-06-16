@@ -36,6 +36,20 @@ void start_daemon()
     close(STDERR_FILENO); // Schließe die Standard-Fehlerausgabe
 }
 
+void create_pid_file()
+{
+    FILE *pid_file = fopen("/var/run/daemon.pid", "w");
+    if (!pid_file)
+    {
+        fprintf(stderr, "Fehler beim Erstellen der PID-Datei\n");
+        exit(1);
+    }
+
+    fprintf(pid_file, "%d", getpid()); // Schreibe die PID des aktuellen Prozesses in die Datei
+
+    fclose(pid_file);
+}
+
 void stop_daemon()
 {
     FILE *pid_file = fopen("/var/run/daemon.pid", "r");
@@ -152,16 +166,17 @@ int main()
 {
     int daemonStart;
     int daemonInformationen;
-    printf("Wollen Sie einen Daemon starten?\nGeben Sie 1 ein, damit ein Daemo gestartet wird.\nGeben Sie 0 ein damit kein Daemon gestartet wird.");
+    printf("Wollen Sie einen Daemon starten?\nGeben Sie 1 ein, damit ein Daemon gestartet wird.\nGeben Sie 0 ein damit kein Daemon gestartet wird.");
     scanf("%d", &daemonStart);
     switch (daemonStart)
     {
     case 1:
         start_daemon();
+        create_pid_file();
         printf("Daemon gestartet.\n");
         run_daemon();
 
-        printf("Möchten Sie Informationen erhalten? -> 1\nMöhten Sie den Daemon beenden? -> 0\n");
+        printf("Möchten Sie Informationen erhalten? -> 1\nMöchten Sie den Daemon beenden? -> 0\n");
         scanf("%d", &daemonInformationen);
         if (daemonInformationen == 1)
         {
