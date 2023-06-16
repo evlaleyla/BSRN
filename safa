@@ -1,0 +1,59 @@
+void check_daemon_status() {
+    FILE* pid_file = fopen("/var/run/daemon.pid", "r");
+    if (!pid_file) {
+        fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
+        exit(1);
+    }
+    
+    pid_t pid;
+    fscanf(pid_file, "%d", &pid);
+    
+    fclose(pid_file);
+    
+    if (kill(pid, 0) == 0) {
+        printf("Daemon läuft (PID: %d)\n", pid);
+    }
+    else {
+        printf("Daemon ist nicht aktiv\n");
+    }
+}
+
+struct ProcessInfo {
+    pid_t process_id;
+    uid_t process_uid;
+    gid_t process_gid;
+    unsigned long long memory_usage;
+};
+
+struct ProcessInfo get_process_info(pid_t pid) {
+
+    struct ProcessInfo info;
+    char statm_path[256];
+    snprintf(statm_path, sizeof(statm_path), "/proc/%d/statm", pid);
+    FILE* statm_file = fopen(statm_path, "r");
+    if (!statm_file) {
+        fprintf(stderr, "Fehler beim Lesen der Prozessinformationen\n");
+        exit(1);
+    }
+    
+    fscanf(statm_file, "%llu", &info.memory_usage);
+    info.memory_usage *= sysconf(_SC_PAGESIZE);
+    
+    fclose(statm_file);
+    
+    char stat_path[256];
+    snprintf(stat_path, sizeof(stat_path), "/proc/%d/stat", pid);
+    FILE* stat_file = fopen(stat_path, "r");
+    if (!stat_file) {
+        fprintf(stderr, "Fehler beim Lesen der Prozessinformationen\n");
+        exit(1);
+    }
+    
+    fscanf(stat_file, "%d", &info.process_id);
+    fseek(stat_file, 256, SEEK_CUR);
+    fscanf(stat_file, "%d %d", &info.process_uid, &info.process_gid);
+    
+    fclose(stat_file);
+    
+    return info;
+}
