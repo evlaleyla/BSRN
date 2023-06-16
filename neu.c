@@ -1,0 +1,194 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <signal.h>
+#include <string.h>
+#include <fcntl.h>
+#include <time.h>
+#include <syslog.h>
+
+void start_daemon()
+{
+    pid_t pid = fork(); // Erstelle einen Kindprozess
+    if (pid < 0)
+    {
+        fprintf(stderr, "Fehler beim Starten des Daemons\n");
+        exit(1);
+    }
+    else if (pid > 0)
+    {
+        exit(0); // Beende den Elternprozess
+    }
+
+    umask(0); // Setze die Zugriffsrechte für Dateien
+
+    if (setsid() < 0)
+    {
+        fprintf(stderr, "Fehler beim Erstellen einer neuen Sitzung\n");
+        exit(1);
+    }
+
+    close(STDIN_FILENO);  // Schließe die Standard-Eingabe
+    close(STDOUT_FILENO); // Schließe die Standard-Ausgabe
+    close(STDERR_FILENO); // Schließe die Standard-Fehlerausgabe
+}
+
+void stop_daemon()
+{
+    FILE *pid_file = fopen("/var/run/daemon.pid", "r");
+    if (!pid_file)
+    {
+        fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
+        exit(1);
+    }
+
+    pid_t pid;
+    fscanf(pid_file, "%d", &pid);
+
+    fclose(pid_file);
+
+    if (kill(pid, SIGTERM) < 0)
+    {
+        fprintf(stderr, "Fehler beim Beenden des Daemons\n");
+        exit(1);
+    }
+}
+
+void check_daemon_status()
+{
+    FILE *pid_file = fopen("/var/run/daemon.pid", "r");
+    if (!pid_file)
+    {
+        fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
+        exit(1);
+    }
+
+    pid_t pid;
+    fscanf(pid_file, "%d", &pid);
+
+    fclose(pid_file);
+
+    if (kill(pid, 0) == 0)
+    {
+        printf("Daemon läuft (PID: %d)\n", pid);
+    }
+    else
+    {
+        printf("Daemon ist nicht aktiv\n");
+    }
+}
+
+struct ProcessInfo
+{
+    pid_t process_id;
+    uid_t process_uid;
+    gid_t process_gid;
+    unsigned long long memory_usage;
+};
+
+struct ProcessInfo get_process_info(pid_t pid)
+{                                                           
+    struct ProcessInfo info;
+    char statm_path[256];
+    snprintf(statm_path, sizeof(statm_path), "/proc/%d/statm", pid);
+    FILE *statm_file = fopen(statm_path, "r");
+    if (!statm_file)
+    {
+        fprintf(stderr, "Fehler beim Lesen der Prozessinformationen\n");
+        exit(1);
+    }
+
+    fscanf(statm_file, "%llu", &info.memory_usage);
+    info.memory_usage *= sysconf(_SC_PAGESIZE);
+
+    fclose(statm_file);
+
+    char stat_path[256];
+    snprintf(stat_path, sizeof(stat_path), "/proc/%d/stat", pid);
+    FILE *stat_file = fopen(stat_path, "r");
+    if (!stat_file)
+    {
+        fprintf(stderr, "Fehler beim Lesen der Prozessinformationen\n");
+        exit(1);
+    }
+
+    fscanf(stat_file, "%d", &info.process_id);
+    fseek(stat_file, 256, SEEK_CUR);
+    fscanf(stat_file, "%d %d", &info.process_uid, &info.process_gid);
+
+    fclose(stat_file);
+
+    return info;
+}
+
+void run_daemon()
+{
+    FILE *pid_file = fopen("/var/run/daemon.pid", "w");
+    if (!pid_file)
+    {
+        fprintf(stderr, "Fehler beim Schreiben der PID-Datei\n");
+        exit(1);
+    }
+
+    fprintf(pid_file, "%d", getpid()); // Schreibe die PID des Daemon-Prozesses in die Datei
+
+    fclose(pid_file);
+
+    while (1)
+    {
+        // Führe hier deine gewünschten Aufgaben aus
+        // ...
+
+        syslog(LOG_INFO, "Protokolleintrag des Daemons"); // Protokolliere eine Meldung
+
+        sleep(5); // Warte für 5 Sekunden
+    }
+}
+
+int main()
+{
+    char *daemonStart;
+    printf("Wollen Sie einen Daemon starten\n");
+    scanf("%s", &daemonStart);
+    if (daemonStart == "Ja")
+    {
+        start_daemon();
+    } if else (daemonStart == "nein"){
+        printf("dann nicht");
+    } else {
+        printf("falsche eingabe");
+    }
+    
+    
+    start_daemon(); // Starte den Daemon-Prozess
+
+    openlog("daemon", LOG_PID | LOG_NDELAY, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
+
+    syslog(LOG_INFO, "Daemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
+
+    // Erstelle einen neuen Prozess für den Daemon und führe den Code weiter aus
+    if (fork() > 0)
+    {
+        exit(0); // Der ursprüngliche Prozess beendet sich
+    }
+
+    setsid(); // Trenne die Verbindung zum Terminal und erstelle eine neue Sitzung
+
+    close(STDIN_FILENO);  // Schließe den Standard-Eingabe-Dateideskriptor
+    close(STDOUT_FILENO); // Schließe den Standard-Ausgabe-Dateideskriptor
+    close(STDERR_FILENO); // Schließe den Standard-Fehler-Dateideskriptor
+
+    // Führe ein neues Programm im Daemon-Prozess aus
+    if (execvp("/pfad/zum/deinem/programm", NULL) < 0)
+    {
+        fprintf(stderr, "Fehler beim Ausführen des Programms\n");
+        exit(1);
+    }
+
+    closelog(); // Schließe das Syslog
+
+    return 0;
+}
