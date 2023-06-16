@@ -1,0 +1,44 @@
+while (1) {
+    // Beispiel-Aufgabe 1: Protokolliere eine Meldung
+    syslog(LOG_INFO, "Protokolleintrag des Daemons");
+
+    // Beispiel-Aufgabe 2: Lese und verarbeite Daten
+    FILE* data_file = fopen("/pfad/zur/daten.txt", "r");
+    if (data_file) {
+        // Datenverarbeitung
+        // ...
+        fclose(data_file);
+    }
+
+    // Beispiel-Aufgabe 3: Netzwerkkommunikation
+    // Hier eine einfache TCP-Serverimplementierung:
+    int server_socket = socket(AF_INET, SOCK_STREAM, 0);
+    // Server-Socket konfigurieren und binden
+    // ...
+    listen(server_socket, SOMAXCONN);
+    // Auf eingehende Verbindungen warten
+    int client_socket = accept(server_socket, NULL, NULL);
+    // Daten mit dem Client austauschen
+    // ...
+    close(client_socket);
+
+    // Beispiel-Aufgabe 4: Dateiverwaltung
+    // Überwache eine Datei auf Änderungen
+    struct stat file_stat;
+    stat("/pfad/zur/datei.txt", &file_stat);
+    time_t previous_modification_time = file_stat.st_mtime;
+
+    while (1) {
+        stat("/pfad/zur/datei.txt", &file_stat);
+        if (file_stat.st_mtime > previous_modification_time) {
+            // Die Datei wurde geändert, reagiere darauf
+            // ...
+            previous_modification_time = file_stat.st_mtime;
+        }
+        sleep(1); // Pausiere für 1 Sekunde zwischen den Überprüfungen
+    }
+
+    // Weitere gewünschte Aufgaben...
+
+    sleep(5); // Pausiere für 5 Sekunden, bevor die nächste Schleifeniteration beginnt
+}
