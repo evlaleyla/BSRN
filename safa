@@ -57,3 +57,40 @@ struct ProcessInfo get_process_info(pid_t pid) {
     
     return info;
 }
+
+
+Die Methode check_daemon_status() hat die Aufgabe, den Status des Daemon-Prozesses zu überprüfen. Hier ist eine detaillierte Erklärung, was in der Methode passiert:
+
+    Zuerst wird versucht, die PID-Datei des Daemons zu öffnen (fopen("/var/run/daemon.pid", "r")). Die PID-Datei enthält die Prozess-ID (PID) des Daemon-Prozesses. Wenn das Öffnen der Datei fehlschlägt, wird eine Fehlermeldung ausgegeben und das Programm wird mit dem Statuscode 1 (exit(1)) beendet.
+
+    Eine Variable pid vom Typ pid_t wird deklariert. Diese Variable wird verwendet, um die PID des Daemons aus der PID-Datei zu lesen.
+
+    Die Methode fscanf(pid_file, "%d", &pid) wird verwendet, um die PID aus der PID-Datei zu lesen und in die Variable pid zu speichern. Die Funktion fscanf liest das Format %d (eine Ganzzahl) aus der Datei pid_file und speichert das Ergebnis in der Adresse der Variablen pid.
+
+    Nachdem die PID gelesen wurde, wird die PID-Datei mit fclose(pid_file) geschlossen.
+
+    Anschließend wird überprüft, ob der Daemon-Prozess noch aktiv ist. Dazu wird die Funktion kill(pid, 0) aufgerufen. Die Funktion kill() sendet ein Signal an einen Prozess. Wenn das Signal 0 ist, wird es dazu verwendet, zu überprüfen, ob der Prozess noch aktiv ist, ohne ihn tatsächlich zu beenden. Wenn kill(pid, 0) den Wert 0 zurückgibt, bedeutet dies, dass der Daemon-Prozess noch aktiv ist.
+
+    Wenn der Daemon-Prozess aktiv ist, wird die Meldung "Daemon läuft (PID: %d)" mit der aktuellen PID des Daemons ausgegeben. Andernfalls wird die Meldung "Daemon ist nicht aktiv" ausgegeben.
+
+Die zweite Methode get_process_info(pid_t pid) dient dazu, Informationen über einen bestimmten Prozess zu erhalten. Hier wird die Struktur ProcessInfo verwendet, um die Informationen zu speichern. Diese Methode funktioniert wie folgt:
+
+    Eine Instanz der Struktur ProcessInfo namens info wird erstellt.
+
+    Es werden Pfade zu den Dateien /proc/<pid>/statm und /proc/<pid>/stat erstellt, wobei <pid> durch die gegebene PID ersetzt wird.
+
+    Die statm-Datei wird geöffnet, um Informationen über den Speicherverbrauch des Prozesses zu lesen. Wenn das Öffnen der Datei fehlschlägt, wird eine Fehlermeldung ausgegeben und das Programm beendet.
+
+    Die Methode fscanf(statm_file, "%llu", &info.memory_usage) wird verwendet, um den Speicherverbrauch aus der statm-Datei zu lesen und in info.memory_usage zu speichern. Der Speicherverbrauch wird dann mit der Seiten-Größe multipliziert (info.memory_usage *= sysconf(_SC_PAGESIZE)), um den tatsächlichen Speicherverbrauch in Bytes zu erhalten.
+
+    Die statm-Datei wird geschlossen.
+
+    Die stat-Datei wird geöffnet, um weitere Informationen über den Prozess zu lesen. Wenn das Öffnen der Datei fehlschlägt, wird eine Fehlermeldung ausgegeben und das Programm beendet.
+
+    Die Methode fscanf(stat_file, "%d", &info.process_id) wird verwendet, um die Prozess-ID (info.process_id) aus der stat-Datei zu lesen. Die Funktion fseek wird verwendet, um 256 Bytes vorwärts im stat-File-Stream zu springen, um bestimmte Informationen zu überspringen. Anschließend werden die Benutzer-ID (info.process_uid) und die Gruppen-ID (info.process_gid) des Prozesses gelesen.
+
+    Die stat-Datei wird geschlossen.
+
+    Schließlich wird die Struktur info mit den gesammelten Informationen zurückgegeben.
+
+Diese Methoden können verwendet werden, um den Status des Daemons zu überprüfen und Informationen über den Daemon-Prozess zu erhalten.
