@@ -150,18 +150,40 @@ void run_daemon()
 
 int main()
 {
-    char *daemonStart;
-    printf("Wollen Sie einen Daemon starten\n");
-    scanf("%s", &daemonStart);
-    if (daemonStart == "Ja")
+   int daemonStart;
+   int daemonInformationen;
+   printf("Wollen Sie einen Daemon starten?\nGeben Sie 1 ein, damit ein Daemo gestartet wird.\nGeben Sie 0 ein damit kein Daemon gestartet wird.);
+   scanf("%d", &daemonStart);
+    switch (daemonStart)
     {
+    case 1:
         start_daemon();
-    } if else (daemonStart == "nein"){
-        printf("dann nicht");
-    } else {
-        printf("falsche eingabe");
+        printf("Daemon gestartet.\n");
+        run_daemon();
+
+        printf("Möchten Sie Informationen erhalten? -> 1\nMöhten Sie den Daemon beenden? -> 0\n");
+        scanf("%d", &daemonInformationen);
+        if(daemonInformationen == 1){
+            check_daemon_status();
+            struct ProcessInfo info = get_process_info(getpid());
+            printf("Prozess ID: %d\n", info.process_id);
+            printf("Benutzer ID: %d\n", info.process_uid);
+            printf("Gruppen ID: %d\n", info.process_gid);
+            printf("Speichernutzung: %llu Bytes\n", info.memory_usage);
+        } else if(daemonInformationen == 0){
+            stop_daemon();
+            printf("Daemon wird beendet.\n);
+        }
     }
+        break;
+    case 0;
+    printf("dann nicht");
+    break;
     
+    default:
+    printf("Flasche Eingabe")
+        break;
+    }
     
     start_daemon(); // Starte den Daemon-Prozess
 
