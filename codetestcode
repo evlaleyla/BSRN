@@ -64,21 +64,21 @@ void stop_daemon()
 
 void check_daemon_status()
 {
-    FILE *pid_file = fopen("/var/run/daemon.pid", "r");
+    FILE *pid_file = fopen("/var/run/daemon.pid", "r");   //es wird versucht pid datei zu öffnen, enthält prozess id, wenn fehlschlag fehlermeldung und programm wird beendet
     if (!pid_file)
     {
         fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
         exit(1);
     }
 
-    pid_t pid;
-    fscanf(pid_file, "%d", &pid);
+    pid_t pid;    //pid vom typ pid_t wird deklariert und die Variable verwenden wir um die pid des daemons aus der pid datei zu lesen
+    fscanf(pid_file, "%d", &pid);   //lies pid aus der pid datei und speichert es in variable pid
 
-    fclose(pid_file);
+    fclose(pid_file); // pid datei wird geschlossen
 
-    if (kill(pid, 0) == 0)
-    {
-        printf("Daemon läuft (PID: %d)\n", pid);
+    if (kill(pid, 0) == 0)  //überprüfung ob daemon prozess noch aktiv ist, kill sendet signal an prozess, wenn signal 0 ist wird es dazu verwendet um zu überprüfen b der prozess noch aktiv ist ohne ihn tatsächlich zu beenden
+    {                       // wenn kill 0 zurückgibt dann ist daemon prozess noch aktiv
+        printf("Daemon läuft (PID: %d)\n", pid);   
     }
     else
     {
@@ -94,39 +94,41 @@ struct ProcessInfo
     unsigned long long memory_usage;
 };
 
-struct ProcessInfo get_process_info(pid_t pid)
+struct ProcessInfo get_process_info(pid_t pid)   //um infos über ein bestimmten prozess zu erhalten, hier wird die Struktur processinfo verwendet um die informationen zu sepcihern
 {
-    struct ProcessInfo info;
-    char statm_path[256];
-    snprintf(statm_path, sizeof(statm_path), "/proc/%d/statm", pid);
-    FILE *statm_file = fopen(statm_path, "r");
+    struct ProcessInfo info;  //eine instanz der struktur processinfo namens info wird erstellt
+    char statm_path[256];    //ein zeichenarray, verwendet um den pfad zur statistik datei des prozesses zu speichern
+    snprintf(statm_path, sizeof(statm_path), "/proc/%d/statm", pid);  //in array wird wird der pfad der datei gespeichert, die datei enthält informationen zum speicherverbrauch des prozesses
+    FILE *statm_file = fopen(statm_path, "r");  //die daei wird im lesemodus geöffnet
     if (!statm_file)
     {
-        fprintf(stderr, "Fehler beim Lesen der Prozessinformationen\n");
+        fprintf(stderr, "Fehler beim Lesen der Prozessinformationen\n");  //wenn öffnen fehlschlägt
         exit(1);
     }
 
-    fscanf(statm_file, "%llu", &info.memory_usage);
-    info.memory_usage *= sysconf(_SC_PAGESIZE);
+    fscanf(statm_file, "%llu", &info.memory_usage); //wert des speicherverbrauchs wird gelesen und in das entsprechende feld memory usage der struktur info geschrieben,, llu wird verwendet um eine vorzeichenlose lange ganzzahl zu lesen
+    info.memory_usage *= sysconf(_SC_PAGESIZE);  //speichervrbrauch wird mit seitenwert multipliziert um den tatsächlichen speicherbedarf in bytes zu erhalten
 
-    fclose(statm_file);
+    fclose(statm_file);  //die datei wird geschlossen, um ressourcen freizugeben 
 
-    char stat_path[256];
-    snprintf(stat_path, sizeof(stat_path), "/proc/%d/stat", pid);
-    FILE *stat_file = fopen(stat_path, "r");
+    char stat_path[256];  //weiterer zeichenarray um den pfad zur datei zu speichern die allg infos über den prozess enthält
+    snprintf(stat_path, sizeof(stat_path), "/proc/%d/stat", pid);  //pfad wird erstellt
+    FILE *stat_file = fopen(stat_path, "r");  //im lesemodus geöffnet
     if (!stat_file)
     {
-        fprintf(stderr, "Fehler beim Lesen der Prozessinformationen\n");
+        fprintf(stderr, "Fehler beim Lesen der Prozessinformationen\n");    // wenn öffnen fehlschlägt
         exit(1);
     }
 
-    fscanf(stat_file, "%d", &info.process_id);
-    fseek(stat_file, 256, SEEK_CUR);
-    fscanf(stat_file, "%d %d", &info.process_uid, &info.process_gid);
+    fscanf(stat_file, "%d", &info.process_id);    //pid wird gelsen
+    fseek(stat_file, 256, SEEK_CUR);   //andere infos werden übersprungen um nur pid zu erhalten
+    fscanf(stat_file, "%d %d", &info.process_uid, &info.process_gid);  //bentuzer id und gruppen id des prozesses werden gelsen und in die entsprechenden felder der struktur info geschrieben
 
-    fclose(stat_file);
+    fclose(stat_file);   //schließen um ressourcen freizugeben
 
-    return info;
+    return info;   //die struktur info die die gesammelten infos über den prozess enthält wird zurückgegeben
+
+//die methode liest nach und nach die infos über den speicherverbrauch und über die allg informationen des prozesses aus den entsprechenden dateien im verzeichnis proc und speichert sie in einer struktur die dann zurückgegeben wird
 }
 
 void run_daemon()
