@@ -12,49 +12,54 @@
 
 void start_daemon()
 {
-    pid_t pid = fork(); // Erstelle einen Kindprozess
+    pid_t pid = fork(); // Erstelle einen Kindprozess 
     if (pid < 0)
     {
         fprintf(stderr, "Fehler beim Starten des Daemons\n");
-        exit(1);
+        exit(1);  //Pr
     }
     else if (pid > 0)
     {
-        exit(0); // Beende den Elternprozess
+        exit(0); // Erzeugung erfolgreich. Beende den Elternprozess(das macht man mit exit0
     }
 
-    umask(0); // Setze die Zugriffsrechte für Dateien
+    umask(0); // Setze die Zugriffsrechte für Dateien, zugriffsrechte auf 0 gesetzt. der daemon hat vollen zugriff auf alle dateien und verzeichnisse, die erstellt werden
 
-    if (setsid() < 0)
+    if (setsid() < 0) //session erstellt
     {
         fprintf(stderr, "Fehler beim Erstellen einer neuen Sitzung\n");
         exit(1);
     }
+// Wir schließen alle geöffneten Filedeskriptoren
+   for (i = sysconf (_SC_OPEN_MAX); i > 0; i--)
+      close (i);
 
-    close(STDIN_FILENO);  // Schließe die Standard-Eingabe
+    close(STDIN_FILENO);  // Schließe die Standard-Eingabe  
     close(STDOUT_FILENO); // Schließe die Standard-Ausgabe
     close(STDERR_FILENO); // Schließe die Standard-Fehlerausgabe
 }
 
 void stop_daemon()
 {
-    FILE *pid_file = fopen("/var/run/daemon.pid", "r");
-    if (!pid_file)
+    FILE *pid_file = fopen("/var/run/daemon.pid", "r"); //daemon pid datei wird geöffnen, um daraus processid zu lesen
+    if (!pid_file)//wenn öffnen fehschlägt
     {
         fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
         exit(1);
     }
 
     pid_t pid;
-    fscanf(pid_file, "%d", &pid);
+    fscanf(pid_file, "%d", &pid); //pid wird aus datei gescannt und dann wird file geschlossen
 
     fclose(pid_file);
 
-    if (kill(pid, SIGTERM) < 0)
+    if (kill(pid, SIGTERM) < 0)  //mit methode kill wird signal sigterm und die pid an den daemon prozess gesendet, um ihn zu beenden
     {
-        fprintf(stderr, "Fehler beim Beenden des Daemons\n");
+        fprintf(stderr, "Fehler beim Beenden des Daemons\n"); //wenns fehlschlägt bzw.< 0 ist, dann wird eine fehlermeldung eingesetzt
         exit(1);
-    }
+    } else {
+        fprint("Der Daemon wurde beendet."
+
 }
 
 void check_daemon_status()
