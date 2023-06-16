@@ -90,7 +90,7 @@ struct ProcessInfo
 };
 
 struct ProcessInfo get_process_info(pid_t pid)
-{                                                           
+{
     struct ProcessInfo info;
     char statm_path[256];
     snprintf(statm_path, sizeof(statm_path), "/proc/%d/statm", pid);
@@ -150,10 +150,10 @@ void run_daemon()
 
 int main()
 {
-   int daemonStart;
-   int daemonInformationen;
-   printf("Wollen Sie einen Daemon starten?\nGeben Sie 1 ein, damit ein Daemo gestartet wird.\nGeben Sie 0 ein damit kein Daemon gestartet wird.);
-   scanf("%d", &daemonStart);
+    int daemonStart;
+    int daemonInformationen;
+    printf("Wollen Sie einen Daemon starten?\nGeben Sie 1 ein, damit ein Daemo gestartet wird.\nGeben Sie 0 ein damit kein Daemon gestartet wird.");
+    scanf("%d", &daemonStart);
     switch (daemonStart)
     {
     case 1:
@@ -163,54 +163,55 @@ int main()
 
         printf("Möchten Sie Informationen erhalten? -> 1\nMöhten Sie den Daemon beenden? -> 0\n");
         scanf("%d", &daemonInformationen);
-        if(daemonInformationen == 1){
+        if (daemonInformationen == 1)
+        {
             check_daemon_status();
             struct ProcessInfo info = get_process_info(getpid());
             printf("Prozess ID: %d\n", info.process_id);
             printf("Benutzer ID: %d\n", info.process_uid);
             printf("Gruppen ID: %d\n", info.process_gid);
             printf("Speichernutzung: %llu Bytes\n", info.memory_usage);
-        } else if(daemonInformationen == 0){
-            stop_daemon();
-            printf("Daemon wird beendet.\n);
         }
-    }
+        else if (daemonInformationen == 0)
+        {
+            stop_daemon();
+            printf("Daemon wird beendet.\n");
+        }
         break;
-    case 0;
-    printf("dann nicht");
-    break;
-    
+    case 0:
+        printf("dann nicht");
+        break;
+
     default:
-    printf("Flasche Eingabe")
+        printf("Flasche Eingabe");
         break;
     }
-    
-    start_daemon(); // Starte den Daemon-Prozess
-
-    openlog("daemon", LOG_PID | LOG_NDELAY, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
-
-    syslog(LOG_INFO, "Daemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
-
-    // Erstelle einen neuen Prozess für den Daemon und führe den Code weiter aus
-    if (fork() > 0)
-    {
-        exit(0); // Der ursprüngliche Prozess beendet sich
-    }
-
-    setsid(); // Trenne die Verbindung zum Terminal und erstelle eine neue Sitzung
-
-    close(STDIN_FILENO);  // Schließe den Standard-Eingabe-Dateideskriptor
-    close(STDOUT_FILENO); // Schließe den Standard-Ausgabe-Dateideskriptor
-    close(STDERR_FILENO); // Schließe den Standard-Fehler-Dateideskriptor
-
-    // Führe ein neues Programm im Daemon-Prozess aus
-    if (execvp("/pfad/zum/deinem/programm", NULL) < 0)
-    {
-        fprintf(stderr, "Fehler beim Ausführen des Programms\n");
-        exit(1);
-    }
-
-    closelog(); // Schließe das Syslog
-
     return 0;
 }
+
+/*
+openlog("daemon", LOG_PID | LOG_NDELAY, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
+
+syslog(LOG_INFO, "Daemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
+
+// Erstelle einen neuen Prozess für den Daemon und führe den Code weiter aus
+if (fork() > 0)
+{
+   exit(0); // Der ursprüngliche Prozess beendet sich
+}
+
+setsid(); // Trenne die Verbindung zum Terminal und erstelle eine neue Sitzung
+
+close(STDIN_FILENO);  // Schließe den Standard-Eingabe-Dateideskriptor
+close(STDOUT_FILENO); // Schließe den Standard-Ausgabe-Dateideskriptor
+close(STDERR_FILENO); // Schließe den Standard-Fehler-Dateideskriptor
+
+// Führe ein neues Programm im Daemon-Prozess aus
+if (execvp("/pfad/zum/deinem/programm", NULL) < 0)
+{
+   fprintf(stderr, "Fehler beim Ausführen des Programms\n");
+   exit(1);
+}
+
+closelog(); // Schließe das Syslog
+*/
