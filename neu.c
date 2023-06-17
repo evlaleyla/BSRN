@@ -12,6 +12,7 @@
 
 void start_daemon()
 {
+    int i;
     pid_t pid = fork(); // Erstelle einen Kindprozess
     if (pid < 0)
     {
@@ -174,8 +175,8 @@ int main()
     switch (daemonStart)
     {
     case 1:
-        start_daemon();
         create_pid_file();
+        start_daemon();
         printf("Daemon gestartet.\n");
         run_daemon();
 
