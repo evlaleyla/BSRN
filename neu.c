@@ -173,7 +173,7 @@ int main()
     int daemonStart;
     int daemonInformationen;
 
-    openlog("daemon", LOGPID | LOG_NDELAY, LOG_DAEMON);
+    openlog("daemon", LOGPID | LOG_NDELAY, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
     
     printf("Wollen Sie einen Daemon starten?\nGeben Sie 1 ein, damit ein Daemon gestartet wird.\nGeben Sie 0 ein damit kein Daemon gestartet wird.");
     scanf("%d", &daemonStart);
@@ -225,15 +225,13 @@ int main()
         break;
     }
 
-    closelog();
+    closelog(); //Schließe den syslog 
     
     return 0;
 }
 
 /*
-openlog("daemon", LOG_PID | LOG_NDELAY, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
 
-syslog(LOG_INFO, "Daemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
 
 // Erstelle einen neuen Prozess für den Daemon und führe den Code weiter aus
 if (fork() > 0)
@@ -254,5 +252,5 @@ if (execvp("/pfad/zum/deinem/programm", NULL) < 0)
    exit(1);
 }
 
-closelog(); // Schließe das Syslog
+
 */
