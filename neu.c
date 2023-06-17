@@ -155,6 +155,8 @@ void run_daemon()
 
     fclose(pid_file);
 
+    
+    //syslog(LOG_INFO, "Daemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
     while (1)
     {
         // Führe hier deine gewünschten Aufgaben aus
@@ -170,6 +172,9 @@ int main()
 {
     int daemonStart;
     int daemonInformationen;
+
+    openlog("daemon", LOGPID | LOG_NDELAY, LOG_DAEMON);
+    
     printf("Wollen Sie einen Daemon starten?\nGeben Sie 1 ein, damit ein Daemon gestartet wird.\nGeben Sie 0 ein damit kein Daemon gestartet wird.");
     scanf("%d", &daemonStart);
     switch (daemonStart)
@@ -177,6 +182,7 @@ int main()
     case 1:
         create_pid_file();
         start_daemon();
+        
         printf("Daemon gestartet.\n");
 
         pid_t pid = fork(); // Erstelle einen weiteren Kindprozess für die eigentlichen Aufgaben des Daemons
@@ -218,6 +224,9 @@ int main()
         printf("Flasche Eingabe");
         break;
     }
+
+    closelog();
+    
     return 0;
 }
 
