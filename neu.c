@@ -178,7 +178,20 @@ int main()
         create_pid_file();
         start_daemon();
         printf("Daemon gestartet.\n");
-        run_daemon();
+
+        pid_t pid = fork(); // Erstelle einen weiteren Kindprozess für die eigentlichen Aufgaben des Daemons
+        if (pid < 0)
+        {
+            fprintf(stderr, "Fehler beim Starten des Daemons\n");
+            exit(1);
+        }
+        else if (pid == 0)
+        {
+            // Kindprozess führt den Daemon-Code aus
+            run_daemon();
+            exit(0);
+        }
+       
 
         printf("Möchten Sie Informationen erhalten? -> 1\nMöchten Sie den Daemon beenden? -> 0\n");
         scanf("%d", &daemonInformationen);
