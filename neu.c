@@ -30,6 +30,9 @@ void start_daemon()
         fprintf(stderr, "Fehler beim Erstellen einer neuen Sitzung\n");
         exit(1);
     }
+    for (i = sysconf (_SC_OPEN_MAX); i > 0; i--)
+    close(i);
+
 
     close(STDIN_FILENO);  // Schließe die Standard-Eingabe
     close(STDOUT_FILENO); // Schließe die Standard-Ausgabe
