@@ -26,6 +26,13 @@ void start_daemon()
 
     umask(0); // Setze die Zugriffsrechte für Dateien
 
+    // Verzeichniswechsel
+    if (chdir("/") < 0)
+    {
+        fprintf(stderr, "Fehler beim Verzeichniswechsel\n");
+        exit(1);
+    }
+    
     if (setsid() < 0)
     {
         fprintf(stderr, "Fehler beim Erstellen einer neuen Sitzung\n");
