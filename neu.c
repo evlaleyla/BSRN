@@ -173,7 +173,7 @@ int main()
     int daemonStart;
     int daemonInformationen;
 
-    openlog("daemon", LOGPID | LOG_NDELAY, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
+    openlog("daemon", LOG_PID | LOG_NDELAY, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
     
     printf("Wollen Sie einen Daemon starten?\nGeben Sie 1 ein, damit ein Daemon gestartet wird.\nGeben Sie 0 ein damit kein Daemon gestartet wird.");
     scanf("%d", &daemonStart);
@@ -181,7 +181,7 @@ int main()
     {
     case 1:
         create_pid_file();
-        start_daemon();
+        start_daemons();
         
         printf("Daemon gestartet.\n");
 
