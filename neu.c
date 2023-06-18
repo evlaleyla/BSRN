@@ -193,7 +193,7 @@ int main()
     {
     case 1:
         create_pid_file();
-        start_daemons();
+        start_daemon();
         
         printf("Daemon gestartet.\n");
 
