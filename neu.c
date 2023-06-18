@@ -117,6 +117,7 @@ struct ProcessInfo
     uid_t process_uid;
     gid_t process_gid;
     unsigned long long memory_usage;
+    mode_t process_rights; // Neue Ergänzung für die Prozessrechte
 };
 
 struct ProcessInfo get_process_info(pid_t pid)
@@ -148,6 +149,8 @@ struct ProcessInfo get_process_info(pid_t pid)
     fscanf(stat_file, "%d", &info.process_id);
     fseek(stat_file, 256, SEEK_CUR);
     fscanf(stat_file, "%d %d", &info.process_uid, &info.process_gid);
+    fseek(stat_file, 10, SEEK_CUR); // Überspringe die nächsten 10 Felder im stat-Datei-Format
+    fscanf(stat_file, "%o", &info.process_rights); // Lese die Prozessrechte im oktalen Format ein
 
     fclose(stat_file);
 
@@ -221,6 +224,7 @@ int main()
             printf("Benutzer ID: %d\n", info.process_uid);
             printf("Gruppen ID: %d\n", info.process_gid);
             printf("Speichernutzung: %llu Bytes\n", info.memory_usage);
+            printf("Prozessrechte: %o\n", info.process_rights);
         }
         else if (daemonInformationen == 0)
         {
