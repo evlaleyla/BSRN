@@ -10,6 +10,7 @@
 #include <time.h>
 #include <syslog.h>
 
+
 void start_daemon()
 {
     int i;
@@ -22,31 +23,34 @@ void start_daemon()
     else if (pid > 0)
     {
         exit(0); // Beende den Elternprozess
+    } 
+  if (setsid() < 0)
+    {
+        fprintf(stderr, "Fehler beim Erstellen einer neuen Sitzung\n");
+        exit(1);
     }
-    handle_signal (SIGHUP, SIG_IGN);
+signal(SIGHUP, SIG_IGN); //Ignoriere Sighup
 
-    umask(0); // Setze die Zugriffsrechte für Dateien
-
-    // Verzeichniswechsel
+// Verzeichniswechsel
     if (chdir("/") < 0)
     {
         fprintf(stderr, "Fehler beim Verzeichniswechsel\n");
         exit(1);
     }
+
+    umask(0); // Setze die Zugriffsrechte für Dateien
     
-    if (setsid() < 0)
-    {
-        fprintf(stderr, "Fehler beim Erstellen einer neuen Sitzung\n");
-        exit(1);
-    }
     for (i = sysconf (_SC_OPEN_MAX); i > 0; i--)
     close(i);
 
-
+*/
     close(STDIN_FILENO);  // Schließe die Standard-Eingabe
     close(STDOUT_FILENO); // Schließe die Standard-Ausgabe
     close(STDERR_FILENO); // Schließe die Standard-Fehlerausgabe
-}
+} */
+
+Open(“dev/null“, O_RDONLY); //STDIN_FILENO
+
 
 void create_pid_file()
 {
