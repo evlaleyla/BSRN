@@ -23,6 +23,7 @@ void start_daemon()
     {
         exit(0); // Beende den Elternprozess
     }
+    handle_signal (SIGHUP, SIG_IGN);
 
     umask(0); // Setze die Zugriffsrechte für Dateien
 
