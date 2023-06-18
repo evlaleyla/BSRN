@@ -113,16 +113,16 @@ void check_daemon_status()
 
 struct ProcessInfo
 {
-    pid_t process_id;
-    uid_t process_uid;
-    gid_t process_gid;
-    unsigned long long memory_usage;
-    mode_t process_rights; // Neue Ergänzung für die Prozessrechte
+    pid_t prozess_id;
+    uid_t prozess_uid;
+    gid_t prozess_gid;
+    unsigned long long speichernutzung;
+    mode_t prozess_rechte; // Neue Ergänzung für die Prozessrechte
 };
 
-struct ProcessInfo get_process_info(pid_t pid)
+struct ProzessInfo get_process_info(pid_t pid)
 {
-    struct ProcessInfo info;
+    struct ProzessInfo info;
     char statm_path[256];
     snprintf(statm_path, sizeof(statm_path), "/proc/%d/statm", pid);
     FILE *statm_file = fopen(statm_path, "r");
@@ -133,7 +133,7 @@ struct ProcessInfo get_process_info(pid_t pid)
     }
 
     fscanf(statm_file, "%llu", &info.memory_usage);
-    info.memory_usage *= sysconf(_SC_PAGESIZE);
+    info.speichernutzung *= sysconf(_SC_PAGESIZE);
 
     fclose(statm_file);
 
@@ -146,11 +146,11 @@ struct ProcessInfo get_process_info(pid_t pid)
         exit(1);
     }
 
-    fscanf(stat_file, "%d", &info.process_id);
+    fscanf(stat_file, "%d", &info.prozess_id);
     fseek(stat_file, 256, SEEK_CUR);
-    fscanf(stat_file, "%d %d", &info.process_uid, &info.process_gid);
+    fscanf(stat_file, "%d %d", &info.prozess_uid, &info.prozess_gid);
     fseek(stat_file, 10, SEEK_CUR); // Überspringe die nächsten 10 Felder im stat-Datei-Format
-    fscanf(stat_file, "%o", &info.process_rights); // Lese die Prozessrechte im oktalen Format ein
+    fscanf(stat_file, "%o", &info.prozess_rechte); // Lese die Prozessrechte im oktalen Format ein
 
     fclose(stat_file);
 
@@ -219,12 +219,12 @@ int main()
         if (daemonInformationen == 1)
         {
             check_daemon_status();
-            struct ProcessInfo info = get_process_info(getpid());
-            printf("Prozess ID: %d\n", info.process_id);
-            printf("Benutzer ID: %d\n", info.process_uid);
-            printf("Gruppen ID: %d\n", info.process_gid);
-            printf("Speichernutzung: %llu Bytes\n", info.memory_usage);
-            printf("Prozessrechte: %o\n", info.process_rights);
+            struct ProzessInfo info = get_process_info(getpid());
+            printf("Prozess ID: %d\n", info.prozess_id);
+            printf("Benutzer ID: %d\n", info.prozess_uid);
+            printf("Gruppen ID: %d\n", info.prozess_gid);
+            printf("Speichernutzung: %llu Bytes\n", info.speichernutzung);
+            printf("Prozessrechte: %o\n", info.prozess_rechte);
         }
         else if (daemonInformationen == 0)
         {
