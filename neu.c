@@ -111,7 +111,7 @@ void check_daemon_status()
     }
 }
 
-struct ProcessInfo
+struct ProzessInfo
 {
     pid_t prozess_id;
     uid_t prozess_uid;
