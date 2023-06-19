@@ -19,8 +19,10 @@ void start_daemon()
         printf("Das Programm wird bereits mit Superuser-Rechten ausgeführt.\n");
     } else {
         // Versuchen, Superuser-Rechte zu erhalten
+}
         if (setuid(0) == 0) {
             printf("Superuser-Rechte erfolgreich erhalten.\n");
+]
     int i;
     pid_t pid = fork(); // Erstelle einen Kindprozess
     if (pid < 0)
