@@ -70,7 +70,7 @@ void create_pid_file()
 {
     
             
-    FILE *pid_file = fopen("/var/run/daemon.pid", "w");
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt", "w");
     if (!pid_file)
     {
         fprintf(stderr, "Fehler beim Erstellen der PID-Datei\n");
@@ -84,7 +84,7 @@ void create_pid_file()
 
 void stop_daemon()
 {
-    FILE *pid_file = fopen("/var/run/daemon.pid", "r");
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt", "r");
     if (!pid_file)
     {
         fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
@@ -105,7 +105,7 @@ void stop_daemon()
 
 void check_daemon_status()
 {
-    FILE *pid_file = fopen("/var/run/daemon.pid", "r");
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt2", "r");
     if (!pid_file)
     {
         fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
@@ -175,7 +175,7 @@ struct ProzessInfo get_process_info(pid_t pid)
 
 void run_daemon()
 {
-    FILE *pid_file = fopen("/var/run/daemon.pid", "w");
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt", "w");
     if (!pid_file)
     {
         fprintf(stderr, "Fehler beim Schreiben der PID-Datei\n");
@@ -216,14 +216,14 @@ int main()
         
         printf("Daemon gestartet.\n");
 
-        pid_t pid = fork(); // Erstelle einen weiteren Kindprozess für die eigentlichen Aufgaben des Daemons
+   */     pid_t pid = fork(); // Erstelle einen weiteren Kindprozess für die eigentlichen Aufgaben des Daemons
         if (pid < 0)
         {
             fprintf(stderr, "Fehler beim Starten des Daemons\n");
             exit(1);
         }
         else if (pid == 0)
-        {
+        { */
             // Kindprozess führt den Daemon-Code aus
             run_daemon();
             exit(0);
@@ -253,7 +253,7 @@ int main()
         break;
 
     default:
-        printf("Flasche Eingabe");
+        printf("Falsche Eingabe");
         break;
     }
 
