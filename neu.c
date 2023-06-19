@@ -22,7 +22,7 @@ void start_daemon()
 }
         if (setuid(0) == 0) {
             printf("Superuser-Rechte erfolgreich erhalten.\n");
-]
+        }
     int i;
     pid_t pid = fork(); // Erstelle einen Kindprozess
     if (pid < 0)
@@ -59,11 +59,12 @@ signal(SIGHUP, SIG_IGN); //Ignoriere Sighup
     for (i = sysconf (_SC_OPEN_MAX); i > 0; i--)
     close(i);
 
-*/
-    close(STDIN_FILENO);  // Schließe die Standard-Eingabe
-    close(STDOUT_FILENO); // Schließe die Standard-Ausgabe
-    close(STDERR_FILENO); // Schließe die Standard-Fehlerausgabe
-} */
+
+ //   close(STDIN_FILENO);  // Schließe die Standard-Eingabe
+ //   close(STDOUT_FILENO); // Schließe die Standard-Ausgabe
+ //   close(STDERR_FILENO); // Schließe die Standard-Fehlerausgabe
+    
+} 
 
 Open(“dev/null“, O_RDONLY); //STDIN_FILENO
 
