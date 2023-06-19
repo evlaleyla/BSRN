@@ -30,8 +30,8 @@ void start_daemon()
         fprintf(stderr, "Fehler beim Starten des Daemons\n");
         exit(1);
     } else if(pid ==0){
-        char *arguments[] = {"/pfad/zum/deinem/programm", "arg1", "arg2", NULL};
-if (execvp("/home/evlaleyla/Schreibtisch/BSRN Projekt", arguments) < 0)
+        char *arguments[] = {"/home/evlaleyla/Schreibtisch/BSRN Projekt.log.txt", "arg1", "arg2", NULL};
+if (execvp("/home/evlaleyla/Schreibtisch/BSRN Projekt.log.txt", arguments) < 0)
 {
    fprintf(stderr, "Fehler beim Ausführen des Programms\n");
    exit(1);
@@ -86,7 +86,7 @@ void create_pid_file()
 
 void stop_daemon()
 {
-    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt", "r");
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt.log.txt", "r");
     if (!pid_file)
     {
         fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
@@ -107,7 +107,7 @@ void stop_daemon()
 
 void check_daemon_status()
 {
-    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt2", "r");
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt.log.txt", "r");
     if (!pid_file)
     {
         fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
@@ -177,7 +177,7 @@ struct ProzessInfo get_process_info(pid_t pid)
 
 void run_daemon()
 {
-    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt", "w");
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt.log.txt", "w");
     if (!pid_file)
     {
         fprintf(stderr, "Fehler beim Schreiben der PID-Datei\n");
