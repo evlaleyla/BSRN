@@ -14,15 +14,7 @@
 void start_daemon()
 {
 
-// Überprüfen Sie, ob das Programm bereits mit Superuser-Rechten ausgeführt wird
-    if (geteuid() == 0) {
-        printf("Das Programm wird bereits mit Superuser-Rechten ausgeführt.\n");
-    } else {
-        // Versuchen, Superuser-Rechte zu erhalten
-}
-        if (setuid(0) == 0) {
-            printf("Superuser-Rechte erfolgreich erhalten.\n");
-        }
+
     int i;
     pid_t pid = fork(); // Erstelle einen Kindprozess
     if (pid < 0)
@@ -54,7 +46,17 @@ signal(SIGHUP, SIG_IGN); //Ignoriere Sighup
         fprintf(stderr, "Fehler beim Verzeichniswechsel\n");
         exit(1);
     }
-
+    
+// Überprüfen Sie, ob das Programm bereits mit Superuser-Rechten ausgeführt wird
+    if (geteuid() == 0) {
+        printf("Das Programm wird bereits mit Superuser-Rechten ausgeführt.\n");
+    } else {
+        // Versuchen, Superuser-Rechte zu erhalten
+}
+        if (setuid(0) == 0) {
+            printf("Superuser-Rechte erfolgreich erhalten.\n");
+        }
+  
     umask(0); // Setze die Zugriffsrechte für Dateien
     
     for (i = sysconf (_SC_OPEN_MAX); i > 0; i--)
