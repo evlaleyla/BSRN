@@ -16,27 +16,31 @@ void start_daemon()
 
 
     int i;
+    int session;
     pid_t pid = fork(); // Erstelle einen Kindprozess
     if (pid < 0)
     {
         fprintf(stderr, "Fehler beim Starten des Daemons\n");
         exit(1);
-    } else if(pid ==0){
-        char *arguments[] = {"/home/safashg/Schreibtisch/Projekt/ultraneu.c", NULL};
-if (execvp("/home/safashg/Schreibtisch/Projekt/helloworld", arguments) < 0)
-{
-   fprintf(stderr, "Fehler beim Ausführen des Programms\n");
-   exit(1);
-}
-    }
-   else if (pid > 0) {
-     
-        if (setsid() < 0)
-    {
+    } if(pid ==0){
+        printf("Kind vor Session\n");
+        session = setsid();
+        printf("SessionnID %d\n", session);
+        printf("Kind nach Session\n");
+        if (session < 0){
         fprintf(stderr, "Fehler beim Erstellen einer neuen Sitzung\n");
         exit(1);
+    }if(session >= 0){
+        printf("Neue Session wurde erstellt.");
     }
-   }
+
+ /*       char *arguments[] = {"/home/safashg/Schreibtisch/Projekt/ultraneu.c", NULL};
+if (execvp("/home/safashg/Schreibtisch/Projekt/helloworld", arguments) < 0){
+   fprintf(stderr, "Fehler beim Ausführen des Programms\n");
+   exit(1);
+}*/
+    }
+   
 signal(SIGHUP, SIG_IGN); //Ignoriere Sighup
 
 // Verzeichniswechsel
@@ -56,13 +60,6 @@ signal(SIGHUP, SIG_IGN); //Ignoriere Sighup
   
     umask(0); // Setze die Zugriffsrechte für Dateien
     
-    for (i = sysconf (_SC_OPEN_MAX); i > 0; i--)
-    close(i);
-
-
- //   close(STDIN_FILENO);  // Schließe die Standard-Eingabe
- //   close(STDOUT_FILENO); // Schließe die Standard-Ausgabe
- //   close(STDERR_FILENO); // Schließe die Standard-Fehlerausgabe
     
 } 
 
@@ -188,7 +185,7 @@ void run_daemon()
     fclose(pid_file);
 
     
-    //syslog(LOG_INFO, "Daemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
+    syslog(LOG_INFO, "Daemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
     while (1)
     {
         // Führe hier deine gewünschten Aufgaben aus
