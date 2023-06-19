@@ -30,8 +30,8 @@ void start_daemon()
         fprintf(stderr, "Fehler beim Starten des Daemons\n");
         exit(1);
     } else if(pid ==0){
-        char *arguments[] = {"/home/evlaleyla/Schreibtisch/BSRN Projekt.log.txt", NULL};
-if (execvp("/home/evlaleyla/Schreibtisch/BSRN Projekt.log.txt", arguments) < 0)
+        char *arguments[] = {"//home/evlaleyla/Schreibtisch/BSRN Projekt/neu.c", NULL};
+if (execvp("/home/evlaleyla/Schreibtisch/BSRN Projekt/neu.c", arguments) < 0)
 {
    fprintf(stderr, "Fehler beim Ausführen des Programms\n");
    exit(1);
