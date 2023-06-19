@@ -14,7 +14,7 @@
 void start_daemon()
 {
 
-/ Überprüfen Sie, ob das Programm bereits mit Superuser-Rechten ausgeführt wird
+// Überprüfen Sie, ob das Programm bereits mit Superuser-Rechten ausgeführt wird
     if (geteuid() == 0) {
         printf("Das Programm wird bereits mit Superuser-Rechten ausgeführt.\n");
     } else {
