@@ -19,6 +19,12 @@ void start_daemon()
     {
         fprintf(stderr, "Fehler beim Starten des Daemons\n");
         exit(1);
+    } else if(pid ==0){
+if (execvp("/pfad/zum/deinem/programm", NULL) < 0)
+{
+   fprintf(stderr, "Fehler beim Ausführen des Programms\n");
+   exit(1);
+}
     }
     else if (pid > 0)
     {
