@@ -109,7 +109,7 @@ void stop_daemon()
 
 void check_daemon_status()
 {
-    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt.log.txt", "r");
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
     if (!pid_file)
     {
         fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
