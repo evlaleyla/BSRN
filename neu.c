@@ -274,5 +274,8 @@ if (execvp("/pfad/zum/deinem/programm", NULL) < 0)
    exit(1);
 }
 
-
+usermod -aG wheel <benutzername>
+visudo
+root        ALL=(ALL)       ALL
+root ALL=(ALL) NOPASSWD:EXEC:ALL
 */
