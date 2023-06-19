@@ -23,21 +23,20 @@ void start_daemon()
         exit(1);
     } else if(pid ==0){
         char *arguments[] = {"/home/safashg/Schreibtisch/Projekt/ultraneu.c", NULL};
-if (execvp("/home/safashg/Schreibtisch/Projekt/helloworld.c", arguments) < 0)
+if (execvp("/home/safashg/Schreibtisch/Projekt/helloworld", arguments) < 0)
 {
    fprintf(stderr, "Fehler beim Ausführen des Programms\n");
    exit(1);
 }
     }
-   // else if (pid > 0)
-    //{
-        //exit(0); // Beende den Elternprozess
-    //} 
-  if (setsid() < 0)
+   else if (pid > 0) {
+     
+        if (setsid() < 0)
     {
         fprintf(stderr, "Fehler beim Erstellen einer neuen Sitzung\n");
         exit(1);
     }
+   }
 signal(SIGHUP, SIG_IGN); //Ignoriere Sighup
 
 // Verzeichniswechsel
@@ -50,10 +49,7 @@ signal(SIGHUP, SIG_IGN); //Ignoriere Sighup
 // Überprüfen Sie, ob das Programm bereits mit Superuser-Rechten ausgeführt wird
     if (geteuid() == 0) {
         printf("Das Programm wird bereits mit Superuser-Rechten ausgeführt.\n");
-    } else {
-        system("sudo ./ultraneu.c");
-        // Versuchen, Superuser-Rechte zu erhalten
-}
+   }
         if (setuid(0) == 0) {
             printf("Superuser-Rechte erfolgreich erhalten.\n");
         }
@@ -76,7 +72,7 @@ void create_pid_file()
     
             
     FILE *pid_file = fopen("/home/safashg/Schreibtisch/Projekt/log.txt", "w");
-    if (!pid_file);
+    if (!pid_file)
     {
         fprintf(stderr, "Fehler beim Erstellen der PID-Datei\n");
         exit(1);
