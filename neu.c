@@ -51,7 +51,7 @@ signal(SIGHUP, SIG_IGN); //Ignoriere Sighup
     if (geteuid() == 0) {
         printf("Das Programm wird bereits mit Superuser-Rechten ausgeführt.\n");
     } else {
-        // Versuchen, Superuser-Rechte zu erhalten
+        system("sudo ./neu.c")
 }
         if (setuid(0) == 0) {
             printf("Superuser-Rechte erfolgreich erhalten.\n");
