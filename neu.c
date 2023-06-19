@@ -150,7 +150,7 @@ struct ProzessInfo get_process_info(pid_t pid)
         exit(1);
     }
 
-    fscanf(statm_file, "%llu", &info.memory_usage);
+    fscanf(statm_file, "%llu", &info.speichernutzung);
     info.speichernutzung *= sysconf(_SC_PAGESIZE);
 
     fclose(statm_file);
