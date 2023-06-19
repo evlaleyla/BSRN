@@ -60,6 +60,14 @@ Open(“dev/null“, O_RDONLY); //STDIN_FILENO
 
 void create_pid_file()
 {
+    / Überprüfen Sie, ob das Programm bereits mit Superuser-Rechten ausgeführt wird
+    if (geteuid() == 0) {
+        printf("Das Programm wird bereits mit Superuser-Rechten ausgeführt.\n");
+    } else {
+        // Versuchen, Superuser-Rechte zu erhalten
+        if (setuid(0) == 0) {
+            printf("Superuser-Rechte erfolgreich erhalten.\n");
+            
     FILE *pid_file = fopen("/var/run/daemon.pid", "w");
     if (!pid_file)
     {
