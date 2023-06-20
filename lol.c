@@ -199,11 +199,7 @@ void run_daemon()
 
 
   FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "w");  //hier wollen wir die prozessinformationen in die log.txt datei speichern
-   /*/ if (!pid_file)
-    {
-        fprintf(stderr, "Fehler beim Erstellen der PID-Datei\n");
-        exit(1);
-    }*/
+  
 
     fprintf(pid_file,"Prozess ID: %d\n", info.prozess_id); // Schreibe die PID des aktuellen Prozesses in die Datei
     fprintf(pid_file,"Benutzer ID: %d\n", info.prozess_uid); // Schreibe die UID des aktuellen Prozesses in die Datei
@@ -212,7 +208,7 @@ void run_daemon()
     fprintf(pid_file,"Prozessrechte: %o\n", info.prozess_rechte); // Schreibe die RECHTE des aktuellen Prozesses in die Datei
 
 
-     fclose(pid_file); */
+     fclose(pid_file);
             
             printf("Prozess ID: %d\n", info.prozess_id);
             printf("Benutzer ID: %d\n", info.prozess_uid);
