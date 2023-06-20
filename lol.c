@@ -37,11 +37,11 @@ void start_daemon()
             printf("Neue Session wurde erstellt.\n");
         }
 
-        /*       char *arguments[] = {"/home/safashg/Schreibtisch/Projekt/ultraneu.c", NULL};
-       if (execvp("/home/safashg/Schreibtisch/Projekt/helloworld", arguments) < 0){
+               char *arguments[] = {"/home/evlaleyla/Schreibtisch/BSRN Projekt/neu.c", NULL};
+       if (execvp("/home/evlaleyla/Schreibtisch/BSRN Projekt/helloworld", arguments) < 0){
           fprintf(stderr, "Fehler beim Ausführen des Programms\n");
           exit(1);
-       }*/
+       }
     }
 
     signal(SIGHUP, SIG_IGN); // Ignoriere Sighup
@@ -69,7 +69,7 @@ void start_daemon()
 void create_pid_file()
 {
 
-    FILE *pid_file = fopen("/home/safashg/Schreibtisch/Projekt/log.txt", "w");
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "w");
     if (!pid_file)
     {
         fprintf(stderr, "Fehler beim Erstellen der PID-Datei\n");
@@ -83,7 +83,7 @@ void create_pid_file()
 
 void stop_daemon()
 {
-    FILE *pid_file = fopen("/home/safashg/Schreibtisch/Projekt/log.txt", "r");
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
     if (!pid_file)
     {
         fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
@@ -104,7 +104,7 @@ void stop_daemon()
 
 void check_daemon_status()
 {
-    FILE *pid_file = fopen("/home/safashg/Schreibtisch/Projekt/log.txt", "r");
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
     if (!pid_file)
     {
         fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
@@ -174,7 +174,7 @@ struct ProzessInfo get_process_info(pid_t pid)
 
 void run_daemon()
 {
-    FILE *pid_file = fopen("/home/safashg/Schreibtisch/Projekt/log.txt", "w");
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "w");
     if (!pid_file)
     {
         fprintf(stderr, "Fehler beim Schreiben der PID-Datei\n");
@@ -188,7 +188,8 @@ void run_daemon()
     syslog(LOG_INFO, "\nDaemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
 
     int running = 1; // Flag für die While-Schleife
-
+    
+    int daemonInformationen;
     printf("Möchten Sie Informationen erhalten? -> 1\nMöchten Sie den Daemon beenden? -> 0\n");
         scanf("%d", &daemonInformationen);
         if (daemonInformationen == 1)
@@ -219,7 +220,7 @@ void run_daemon()
         syslog(LOG_INFO, "Daemon schläft...");
 
         // Überprüfe, ob der Daemon beendet werden soll
-        FILE *pid_file = fopen("/home/safashg/Schreibtisch/Projekt/log.txt", "r");
+        FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
         if (!pid_file)
         {
             fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
