@@ -186,7 +186,12 @@ void run_daemon()
 
     
     syslog(LOG_INFO, "\nDaemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
-    while (1)
+    void run_daemon()
+{
+    // ...
+
+    int running = 1;  // Flag für die While-Schleife
+    while (running)
     {
         syslog(LOG_INFO, "Daemon läuft...");
 
@@ -195,9 +200,27 @@ void run_daemon()
         sleep(5); // Warte für 5 Sekunden
 
         syslog(LOG_INFO, "Daemon schläft...");
-    }
-    closelog();
+
+        // Überprüfe, ob der Daemon beendet werden soll
+        FILE *pid_file = fopen("/home/safashg/Schreibtisch/Projekt/log.txt", "r");
+        if (!pid_file)
+        {
+            fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
+            exit(1);
+        }
+
+        pid_t pid;
+        fscanf(pid_file, "%d", &pid);
+
+        fclose(pid_file);
+
+        if (kill(pid, 0) != 0)
+        {
+            // Daemon wurde beendet, beende die While-Schleife
+            running = 0;
+        }
 }
+
 
 int main()
 {
