@@ -201,6 +201,12 @@ void run_daemon()
             printf("Gruppen ID: %d\n", info.prozess_gid);
             printf("Speichernutzung: %llu Bytes\n", info.speichernutzung);
             printf("Prozessrechte: %o\n", info.prozess_rechte);
+
+            printf("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "Prozess ID: %d\n", info.prozess_id)
+            printf("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt","Benutzer ID: %d\n", info.prozess_uid);
+            printf("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt","Gruppen ID: %d\n", info.prozess_gid);
+            printf("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt","Speichernutzung: %llu Bytes\n", info.speichernutzung);
+            printf("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt","Prozessrechte: %o\n", info.prozess_rechte);
         }
         else if (daemonInformationen == 0)
         {
