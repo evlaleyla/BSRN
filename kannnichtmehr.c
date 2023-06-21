@@ -168,8 +168,9 @@ struct ProzessInfo get_process_info(pid_t pid)
     return info;
 }
 
-void run_daemon()
-{
+void ausgabe(){
+   
+   
     check_daemon_status();
     struct ProzessInfo info = get_process_info(getpid());
     
@@ -184,10 +185,10 @@ void run_daemon()
     syslogd(LOG_INFO, "\nDaemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
 
      fclose(pid_file); 
-    
-    int daemonInformationen;
 
-    printf("Möchten Sie Informationen erhalten? -> 1\nMöchten Sie den Daemon beenden? -> 0\n");
+      int daemonInformationen;
+
+    printf("Möchten Sie Informationen erhalten? Wenn ja, dann tippe 1. wenn nein dann 0\n");
         scanf("%d", &daemonInformationen);
         
         if (daemonInformationen == 1)
@@ -197,51 +198,50 @@ void run_daemon()
             printf("Gruppen ID: %d\n", info.prozess_gid);
             printf("Speichernutzung: %llu Bytes\n", info.speichernutzung);
             printf("Prozessrechte: %o\n", info.prozess_rechte);
+        } else if(daemonInformationen == 0){
+            printf("informationen wurden gespeichert, werden aber nicht ausgegeben.\n")
         }
-        if (daemonInformationen == 0)
-        {
-            printf("sDaemon wird gestoppt..");
-           
-   
-    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
-   
-    pid_t pid;
-    fscanf(pid_file, "%d", &pid);
-    fclose(pid_file);
-    if (kill(pid, SIGTERM) == 0)
-    {
-        printf("Daemon wurde beendet\n");
-    }else  {
-    perror("Fehler beim Beenden des Daemons\n");
-        exit(1);
-    }       
-        }
+}
 
-        int running = 1;
-
-    while (running)
+void run_daemon()
+{   
+    int running = 1;
+    int daemonBeenden;
+     while (running)
     {
         syslog(LOG_INFO, "Daemon läuft...");
         syslog(LOG_ERR, "Fehler beim Verarbeiten der Anfrage.");
         sleep(5); // Warte für 5 Sekunden
         syslog(LOG_INFO, "Daemon schläft...");
         // Überprüfe, ob der Daemon beendet werden soll
-        FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
-        if (!pid_file)
+       
+    printf("Moechten Sie den Daemon beenden? wenn ja dann 1");
+    scanf("%d", &daemonBeenden);
+        if (daemonBeenden == 1)
         {
-            perror("Fehler beim Lesen der PID-Datei\n");
-            exit(1);
+            printf("Daemon wird gestoppt..");
+           
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
+   
+    pid_t pid;
+    fscanf(pid_file, "%d", &pid);
+    fclose(pid_file);
+    
+    if (kill(pid, SIGTERM) == 0)
+    {
+        printf("Daemon wurde beendet\n");
+        running = 0;
+   
+    }else {
+    perror("Fehler beim Beenden des Daemons\n");
+        exit(1);
+    }       
+        } else if(daemonBeenden == 0){
+            printf("daemon läufz weiter");
         }
-        pid_t pid = getpid();
-        fscanf(pid_file, "%d", &pid);
-        fclose(pid_file);
-        if (kill(pid, 0) != 0)
-        {
-            // Daemon wurde beendet, beende die While-Schleife
-            running = 0;
         }
     }
-}
+
 int main()
 {
     int daemonStart;
@@ -255,6 +255,7 @@ int main()
         create_pid_file();
         start_daemon();
         printf("Daemon gestartet.\n");
+        ausgabe();
         run_daemon();
       
         break;
