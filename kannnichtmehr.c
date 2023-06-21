@@ -158,28 +158,30 @@ void run_daemon()
         fprintf(stderr, "Fehler beim Schreiben der PID-Datei\n");
         exit(1);
     }
-  //  fprintf(pid_file, "%d", getpid()); // Schreibe die PID des Daemon-Prozesses in die Datei
+    fprintf(pid_file, "%d", getpid()); // Schreibe die PID des Daemon-Prozesses in die Datei
    
    
+  
+    syslog(LOG_INFO, "\nDaemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
+   
+    int running = 1; // Flag für die While-Schleife
+    check_daemon_status();
+    struct ProzessInfo info = get_process_info(getpid());
+
     fprintf(pid_file,"Prozess ID: %d\n", info.prozess_id); // Schreibe die PID des aktuellen Prozesses in die Datei
     fprintf(pid_file,"Benutzer ID: %d\n", info.prozess_uid); // Schreibe die UID des aktuellen Prozesses in die Datei
     fprintf(pid_file,"Gruppen ID: %d\n", info.prozess_gid); // Schreibe die GID des aktuellen Prozesses in die Datei
     fprintf(pid_file,"Speichernutzung: %llu Bytes\n", info.speichernutzung); // Schreibe die SPEICHERNUTZUNG des aktuellen Prozesses in die Datei
     fprintf(pid_file,"Prozessrechte: %o\n", info.prozess_rechte); // Schreibe die RECHTE des aktuellen Prozesses in die Datei
 
-   syslog(LOG_INFO, "\nDaemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
-    fclose(pid_file);
+     fclose(pid_file); 
     
-   
     int daemonInformationen;
     printf("Möchten Sie Informationen erhalten? -> 1\nMöchten Sie den Daemon beenden? -> 0\n");
-    scanf("%d", &daemonInformationen);
+        scanf("%d", &daemonInformationen);
         
         if (daemonInformationen == 1)
         {
-            check_daemon_status();
-            struct ProzessInfo info = get_process_info(getpid());
-
             printf("Prozess ID: %d\n", info.prozess_id);
             printf("Benutzer ID: %d\n", info.prozess_uid);
             printf("Gruppen ID: %d\n", info.prozess_gid);
@@ -209,8 +211,6 @@ void run_daemon()
         exit(1);
     }       
         }
-
-    int running = 1; // Flag für die While-Schleife
     while (running)
     {
         syslog(LOG_INFO, "Daemon läuft...");
