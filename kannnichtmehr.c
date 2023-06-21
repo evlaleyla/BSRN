@@ -17,7 +17,7 @@ void start_daemon()
     
     if (pid < 0)
     {
-        perroro("Fehler beim Starten des Daemons\n");
+        perror("Fehler beim Starten des Daemons\n");
         exit(1);
     }
     
@@ -65,7 +65,7 @@ void start_daemon()
 
     umask(0); // Setze die Zugriffsrechte für Dateien
 
-    syslog(LOG_INFO, "Daemon wurde gestartet.")
+    syslog(LOG_INFO, "Daemon wurde gestartet.");
 }
 
 void create_pid_file()
@@ -80,7 +80,7 @@ void create_pid_file()
     
     }
     fclose(pid_file);
-syslog(LOG_INFO, "Datei wurde erstellt.")
+syslog(LOG_INFO, "Datei wurde erstellt.");
 
 }
 void stop_daemon()
@@ -186,7 +186,7 @@ void ausgabe(){
     fprintf(pid_file,"Speichernutzung: %llu Bytes\n", info.speichernutzung); // Schreibe die SPEICHERNUTZUNG des aktuellen Prozesses in die Datei
     fprintf(pid_file,"Prozessrechte: %o\n", info.prozess_rechte); // Schreibe die RECHTE des aktuellen Prozesses in die Datei
 
-    syslogd(LOG_INFO, "\nDaemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
+    syslog(LOG_INFO, "\nDaemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
 
      fclose(pid_file); 
 
@@ -203,7 +203,7 @@ void ausgabe(){
             printf("Speichernutzung: %llu Bytes\n", info.speichernutzung);
             printf("Prozessrechte: %o\n", info.prozess_rechte);
         } else if(daemonInformationen == 0){
-            printf("informationen wurden gespeichert, werden aber nicht ausgegeben.\n")
+            printf("informationen wurden gespeichert, werden aber nicht ausgegeben.\n");
         }
 }
 
@@ -273,4 +273,3 @@ int main()
     closelog(); // Schließe den syslog
     return 0;
 }
-
