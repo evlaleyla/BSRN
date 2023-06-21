@@ -196,26 +196,17 @@ void run_daemon()
         {
             check_daemon_status();
             struct ProzessInfo info = get_process_info(getpid());
-
-
-  FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "w");  //hier wollen wir die prozessinformationen in die log.txt datei speichern
-  
-
-    fprintf(pid_file,"Prozess ID: %d\n", info.prozess_id); // Schreibe die PID des aktuellen Prozesses in die Datei
-    fprintf(pid_file,"Benutzer ID: %d\n", info.prozess_uid); // Schreibe die UID des aktuellen Prozesses in die Datei
-    fprintf(pid_file,"Gruppen ID: %d\n", info.prozess_gid); // Schreibe die GID des aktuellen Prozesses in die Datei
-    fprintf(pid_file,"Speichernutzung: %llu Bytes\n", info.speichernutzung); // Schreibe die SPEICHERNUTZUNG des aktuellen Prozesses in die Datei
-    fprintf(pid_file,"Prozessrechte: %o\n", info.prozess_rechte); // Schreibe die RECHTE des aktuellen Prozesses in die Datei
-
-
-     fclose(pid_file);
-            
             printf("Prozess ID: %d\n", info.prozess_id);
             printf("Benutzer ID: %d\n", info.prozess_uid);
             printf("Gruppen ID: %d\n", info.prozess_gid);
             printf("Speichernutzung: %llu Bytes\n", info.speichernutzung);
             printf("Prozessrechte: %o\n", info.prozess_rechte);
 
+            printf("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "Prozess ID: %d\n", info.prozess_id)
+            printf("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt","Benutzer ID: %d\n", info.prozess_uid);
+            printf("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt","Gruppen ID: %d\n", info.prozess_gid);
+            printf("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt","Speichernutzung: %llu Bytes\n", info.speichernutzung);
+            printf("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt","Prozessrechte: %o\n", info.prozess_rechte);
         }
         else if (daemonInformationen == 0)
         {
