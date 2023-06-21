@@ -12,42 +12,47 @@
 #include <syslog.h>
 void start_daemon()
 {
-    int i;
     int session;
     pid_t pid = fork(); // Erstelle einen Kindprozess
+    
     if (pid < 0)
     {
-        fprintf(stderr, "Fehler beim Starten des Daemons\n");
+        perroro("Fehler beim Starten des Daemons\n");
         exit(1);
     }
+    
     if (pid == 0)
     {
-        printf("Kind vor Session\n");
         session = setsid();
-        printf("SessionnID %d\n", session);
-        printf("Kind nach Session\n");
+        
+
         if (session < 0)
         {
-            fprintf(stderr, "Fehler beim Erstellen einer neuen Sitzung\n");
+            perror("Fehler beim Erstellen einer neuen Sitzung\n");
             exit(1);
         }
         if (session >= 0)
         {
-            printf("Neue Session wurde erstellt.\n");
+            printf("Neue Session wurde erstellt. SessionnID %d\n", session);
         }
                char *arguments[] = {"/home/evlaleyla/Schreibtisch/BSRN Projekt/neu.c", NULL};
-       if (execvp("/home/evlaleyla/Schreibtisch/BSRN Projekt/helloworld", arguments) < 0){
-          fprintf(stderr, "Fehler beim Ausführen des Programms\n");
+       
+        if (execvp("/home/evlaleyla/Schreibtisch/BSRN Projekt/helloworld", arguments) < 0){
+          perror("Fehler beim Ausführen des Programms\n");
           exit(1);
        }
+
     }
+
     signal(SIGHUP, SIG_IGN); // Ignoriere Sighup
+    
     // Verzeichniswechsel
     if (chdir("/") < 0)
     {
-        fprintf(stderr, "Fehler beim Verzeichniswechsel\n");
+        perror("Fehler beim Verzeichniswechsel\n");
         exit(1);
     }
+
     // Überprüfen Sie, ob das Programm bereits mit Superuser-Rechten ausgeführt wird
     if (geteuid() == 0)
     {
@@ -57,17 +62,21 @@ void start_daemon()
     {
         printf("Superuser-Rechte erfolgreich erhalten.\n");
     }
+
     umask(0); // Setze die Zugriffsrechte für Dateien
 }
+
 void create_pid_file()
 {
     FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "w");
     if (!pid_file)
     {
-        fprintf(stderr, "Fehler beim Erstellen der PID-Datei\n");
+        perror("Fehler beim Erstellen der PID-Datei\n");
         exit(1);
-    }
+    } else {
     fprintf(pid_file, "%d", getpid()); // Schreibe die PID des aktuellen Prozesses in die Datei
+    
+    }
     fclose(pid_file);
 }
 void stop_daemon()
@@ -77,7 +86,7 @@ void stop_daemon()
     FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
     if (!pid_file)
     {
-        fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
+        perror("Fehler beim Lesen der PID-Datei\n");
         exit(1);
     }
     pid_t pid;
@@ -85,7 +94,7 @@ void stop_daemon()
     fclose(pid_file);
     if (kill(pid, SIGTERM) < 0)
     {
-        fprintf(stderr, "Fehler beim Beenden des Daemons\n");
+        perror("Fehler beim Beenden des Daemons\n");
         exit(1);
     }else {
         printf("Daemon wurde beendet");
@@ -97,7 +106,7 @@ void check_daemon_status()
     FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
     if (!pid_file)
     {
-        fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
+        perror("Fehler beim Lesen der PID-Datei\n");
         exit(1);
     }
     pid_t pid;
@@ -110,8 +119,10 @@ void check_daemon_status()
     else
     {
         printf("Daemon ist nicht aktiv\n");
+        exit(1);
     }
 }
+
 struct ProzessInfo
 {
     pid_t prozess_id;
@@ -122,26 +133,32 @@ struct ProzessInfo
 };
 struct ProzessInfo get_process_info(pid_t pid)
 {
+
     struct ProzessInfo info;
     char statm_path[256];
     snprintf(statm_path, sizeof(statm_path), "/proc/%d/statm", pid);
     FILE *statm_file = fopen(statm_path, "r");
+    
     if (!statm_file)
     {
-        fprintf(stderr, "Fehler beim Lesen der Prozessinformationen\n");
+        perror("Fehler beim Lesen der Prozessinformationen\n");
         exit(1);
     }
+
     fscanf(statm_file, "%llu", &info.speichernutzung);
     info.speichernutzung *= sysconf(_SC_PAGESIZE);
     fclose(statm_file);
+   
     char stat_path[256];
     snprintf(stat_path, sizeof(stat_path), "/proc/%d/stat", pid);
     FILE *stat_file = fopen(stat_path, "r");
+    
     if (!stat_file)
     {
-        fprintf(stderr, "Fehler beim Lesen der Prozessinformationen\n");
+        perror("Fehler beim Lesen der Prozessinformationen\n");
         exit(1);
     }
+
     fscanf(stat_file, "%d", &info.prozess_id);
     fseek(stat_file, 256, SEEK_CUR);
     fscanf(stat_file, "%d %d", &info.prozess_uid, &info.prozess_gid);
@@ -150,33 +167,26 @@ struct ProzessInfo get_process_info(pid_t pid)
     fclose(stat_file);
     return info;
 }
+
 void run_daemon()
 {
-    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "w");
-    if (!pid_file)
-    {
-        fprintf(stderr, "Fehler beim Schreiben der PID-Datei\n");
-        exit(1);
-    }
-    fprintf(pid_file, "%d", getpid()); // Schreibe die PID des Daemon-Prozesses in die Datei
-   
-   
-  
-    syslog(LOG_INFO, "\nDaemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
-   
-    int running = 1; // Flag für die While-Schleife
     check_daemon_status();
     struct ProzessInfo info = get_process_info(getpid());
-
+    
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "w");
+  
     fprintf(pid_file,"Prozess ID: %d\n", info.prozess_id); // Schreibe die PID des aktuellen Prozesses in die Datei
     fprintf(pid_file,"Benutzer ID: %d\n", info.prozess_uid); // Schreibe die UID des aktuellen Prozesses in die Datei
     fprintf(pid_file,"Gruppen ID: %d\n", info.prozess_gid); // Schreibe die GID des aktuellen Prozesses in die Datei
     fprintf(pid_file,"Speichernutzung: %llu Bytes\n", info.speichernutzung); // Schreibe die SPEICHERNUTZUNG des aktuellen Prozesses in die Datei
     fprintf(pid_file,"Prozessrechte: %o\n", info.prozess_rechte); // Schreibe die RECHTE des aktuellen Prozesses in die Datei
 
+    syslogd(LOG_INFO, "\nDaemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
+
      fclose(pid_file); 
     
     int daemonInformationen;
+
     printf("Möchten Sie Informationen erhalten? -> 1\nMöchten Sie den Daemon beenden? -> 0\n");
         scanf("%d", &daemonInformationen);
         
@@ -190,15 +200,11 @@ void run_daemon()
         }
         if (daemonInformationen == 0)
         {
-            printf("stop\n");
+            printf("sDaemon wird gestoppt..");
            
    
     FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
-    if (!pid_file)
-    {
-        fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
-        exit(1);
-    }
+   
     pid_t pid;
     fscanf(pid_file, "%d", &pid);
     fclose(pid_file);
@@ -206,11 +212,13 @@ void run_daemon()
     {
         printf("Daemon wurde beendet\n");
     }else  {
-        
-    fprintf(stderr, "Fehler beim Beenden des Daemons\n");
+    perror("Fehler beim Beenden des Daemons\n");
         exit(1);
     }       
         }
+
+        int running = 1;
+
     while (running)
     {
         syslog(LOG_INFO, "Daemon läuft...");
@@ -221,7 +229,7 @@ void run_daemon()
         FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
         if (!pid_file)
         {
-            fprintf(stderr, "Fehler beim Lesen der PID-Datei\n");
+            perror("Fehler beim Lesen der PID-Datei\n");
             exit(1);
         }
         pid_t pid = getpid();
@@ -238,7 +246,7 @@ int main()
 {
     int daemonStart;
     int daemonInformationen;
-    openlog("daemon", LOG_PID | LOG_NDELAY, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
+    openlog("daemons", LOG_PID | LOG_NDELAY, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
     printf("Wollen Sie einen Daemon starten?\nGeben Sie 1 ein, damit ein Daemon gestartet wird.\nGeben Sie 0 ein damit kein Daemon gestartet wird.");
     scanf("%d", &daemonStart);
     switch (daemonStart)
@@ -248,27 +256,6 @@ int main()
         start_daemon();
         printf("Daemon gestartet.\n");
         run_daemon();
-      //  exit(0);
-      
-        /*
-        printf("Möchten Sie Informationen erhalten? -> 1\nMöchten Sie den Daemon beenden? -> 0\n");
-        scanf("%d", &daemonInformationen);
-        if (daemonInformationen == 1)
-        {
-            check_daemon_status();
-            struct ProzessInfo info = get_process_info(getpid());
-            printf("Prozess ID: %d\n", info.prozess_id);
-            printf("Benutzer ID: %d\n", info.prozess_uid);
-            printf("Gruppen ID: %d\n", info.prozess_gid);
-            printf("Speichernutzung: %llu Bytes\n", info.speichernutzung);
-            printf("Prozessrechte: %o\n", info.prozess_rechte);
-        }
-        else if (daemonInformationen == 0)
-        {
-            stop_daemon();
-            printf("Daemon wird beendet.\n");
-        }
-        */
       
         break;
     case 0:
