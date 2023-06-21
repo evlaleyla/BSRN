@@ -212,6 +212,7 @@ void run_daemon()
         {
             stop_daemon();
             printf("Daemon wird beendet.\n");
+            return;
         }
 
 
