@@ -43,6 +43,7 @@ void start_daemon()
           exit(1);
        }
 
+
     }
 
     signal(SIGHUP, SIG_IGN); // Ignoriere Sighup
@@ -83,29 +84,9 @@ void create_pid_file()
     fclose(pid_file);
 syslog(LOG_INFO, "Datei wurde erstellt.");
 
+
 }
-void stop_daemon()
-{
-    printf("Stop methode");
-   /*
-    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
-    if (!pid_file)
-    {
-        perror("Fehler beim Lesen der PID-Datei\n");
-        exit(1);
-    }
-    pid_t pid;
-    fscanf(pid_file, "%d", &pid);
-    fclose(pid_file);
-    if (kill(pid, SIGTERM) < 0)
-    {
-        perror("Fehler beim Beenden des Daemons\n");
-        exit(1);
-    }else {
-        printf("Daemon wurde beendet");
-    }
-    */
-}
+
 void check_daemon_status()
 {
     FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
@@ -118,7 +99,7 @@ void check_daemon_status()
     fscanf(pid_file, "%d", &pid);
     fclose(pid_file);
     if (kill(pid, 0) == 0)
-    {1
+    {
         printf("Daemon läuft (PID: %d)\n", pid);
     }
     else
@@ -264,6 +245,11 @@ int main()
 {
     int daemonStart;
     int daemonInformationen;
+
+    FILE*logFile;
+    logFile = fopen("logdatei.log", "a");
+
+
     setlogmask(LOG_UPTO(LOG_NOTICE));
     openlog("daemons", LOG_PID, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
    
