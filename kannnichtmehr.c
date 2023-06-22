@@ -54,7 +54,7 @@ void start_daemon()
     }
 
     // Überprüfen Sie, ob das Programm bereits mit Superuser-Rechten ausgeführt wird
-    if (geteuid() == 0)
+    if (getuid() == 0)
     {
         printf("Das Programm wird bereits mit Superuser-Rechten ausgeführt.\n");
     }
@@ -208,7 +208,8 @@ void ausgabe(){
 }
 
 void run_daemon()
-{   
+{  
+    printf("hallo"); 
     int running = 1;
     int daemonBeenden;
      while (running)
@@ -217,16 +218,21 @@ void run_daemon()
         syslog(LOG_ERR, "Fehler beim Verarbeiten der Anfrage.");
         sleep(5); // Warte für 5 Sekunden
         syslog(LOG_INFO, "Daemon schläft...");
+        
         // Überprüfe, ob der Daemon beendet werden soll
-       
-    printf("Moechten Sie den Daemon beenden? wenn ja dann 1");
-    scanf("%d", &daemonBeenden);
+        printf("Moechten Sie den Daemon beenden? wenn ja dann 1");
+        scanf("%d", &daemonBeenden);
         if (daemonBeenden == 1)
         {
             printf("Daemon wird gestoppt..");
            
     FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
    
+   if(!pid_file){
+    perror("Fehler beim lesen der PID-Datei\n");
+    exit(1);
+   }
+
     pid_t pid;
     fscanf(pid_file, "%d", &pid);
     fclose(pid_file);
@@ -235,13 +241,14 @@ void run_daemon()
     {
         printf("Daemon wurde beendet\n");
         running = 0;
+        return;
    
     }else {
     perror("Fehler beim Beenden des Daemons\n");
         exit(1);
     }       
         } else if(daemonBeenden == 0){
-            printf("daemon läufz weiter");
+            printf("daemon läuft weiter");
         }
         }
     }
@@ -251,6 +258,10 @@ int main()
     int daemonStart;
     int daemonInformationen;
     openlog("daemons", LOG_PID | LOG_NDELAY, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
+   /* if(syslog(LOG_ERR, "Fehler beim öffnen der Datei") < 0){
+        perror("Fehler beim protokollieren der Meldung\n");
+        exit(1);
+    }*/
     printf("Wollen Sie einen Daemon starten?\nGeben Sie 1 ein, damit ein Daemon gestartet wird.\nGeben Sie 0 ein damit kein Daemon gestartet wird.");
     scanf("%d", &daemonStart);
     switch (daemonStart)
