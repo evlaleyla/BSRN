@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <time.h>
 #include <syslog.h>
+
 void start_daemon()
 {
     int session;
@@ -117,7 +118,7 @@ void check_daemon_status()
     fscanf(pid_file, "%d", &pid);
     fclose(pid_file);
     if (kill(pid, 0) == 0)
-    {
+    {1
         printf("Daemon läuft (PID: %d)\n", pid);
     }
     else
@@ -129,9 +130,9 @@ void check_daemon_status()
 
 struct ProzessInfo
 {
-    pid_t prozess_id;
-    uid_t prozess_uid;
-    gid_t prozess_gid;
+    int prozess_id;
+    int prozess_uid;
+    int prozess_gid;
     unsigned long long speichernutzung;
     mode_t prozess_rechte; // Neue Ergänzung für die Prozessrechte
 };
@@ -212,20 +213,25 @@ void run_daemon()
     printf("hallo"); 
     int running = 1;
     int daemonBeenden;
-     while (running)
+   
+    while (running)
     {
+        printf("1");
         syslog(LOG_INFO, "Daemon läuft...");
         syslog(LOG_ERR, "Fehler beim Verarbeiten der Anfrage.");
         sleep(5); // Warte für 5 Sekunden
         syslog(LOG_INFO, "Daemon schläft...");
         
+
         // Überprüfe, ob der Daemon beendet werden soll
         printf("Moechten Sie den Daemon beenden? wenn ja dann 1");
         scanf("%d", &daemonBeenden);
         if (daemonBeenden == 1)
         {
+            printf("2");
             printf("Daemon wird gestoppt..");
-           
+           printf("3");
+    
     FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
    
    if(!pid_file){
@@ -233,6 +239,7 @@ void run_daemon()
     exit(1);
    }
 
+    printf("4");
     pid_t pid;
     fscanf(pid_file, "%d", &pid);
     fclose(pid_file);
@@ -257,7 +264,9 @@ int main()
 {
     int daemonStart;
     int daemonInformationen;
-    openlog("daemons", LOG_PID | LOG_NDELAY, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
+    setlogmask(LOG_UPTO(LOG_NOTICE));
+    openlog("daemons", LOG_PID, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
+   
    /* if(syslog(LOG_ERR, "Fehler beim öffnen der Datei") < 0){
         perror("Fehler beim protokollieren der Meldung\n");
         exit(1);
