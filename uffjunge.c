@@ -292,7 +292,7 @@ void run_daemon()
                 printf("Daemon wurde beendet um: %s\n", buffer);
                 syslog(LOG_INFO, "Daemon wurde beendet um: %s\n", buffer);
                 running = 0;
-                break;
+                return;
             }
             else
             {
