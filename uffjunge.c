@@ -314,7 +314,8 @@ int main()
 
     int daemonStart;
     int daemonInformationen;
-
+    setbuf(stdout, NULL);
+    
     FILE *logFile;
     logFile = fopen("logdatei.log", "a");
 
