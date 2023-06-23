@@ -328,7 +328,6 @@ int main()
     logFile = fopen("logdatei.log", "a");
 
 
-    setlogmask(LOG_UPTO(LOG_NOTICE));
     openlog("Daemon", LOG_PID, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
    
     printf("Wollen Sie einen Daemon starten?\nGeben Sie bitte '1' ein, damit ein Daemon gestartet wird.\nGeben Sie bitte '0' ein, damit kein Daemon gestartet wird.");
