@@ -245,7 +245,7 @@ void ausgabe(){
 
     
         } else if(daemonInformationen == 0){
-            printf("informationen wurden gespeichert, werden aber nicht ausgegeben.\n");
+            printf("Die Informationen wurden gespeichert, sie werden aber nicht ausgegeben.\n");
         }
 }
 
