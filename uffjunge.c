@@ -282,7 +282,7 @@ void run_daemon()
                 exit(1);
             }
 
-            printf("4");
+      
             pid_t pid;
             fscanf(pid_file, "%d", &pid);
             fclose(pid_file);
