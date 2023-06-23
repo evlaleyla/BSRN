@@ -65,9 +65,12 @@ void start_daemon()
         printf("Superuser-Rechte erfolgreich erhalten.\n");
     }
 
-    umask(0); // Setze die Zugriffsrechte für Dateien
+    umask(777); // Setze die Zugriffsrechte für Dateien
 
     syslog(LOG_INFO, "Daemon wurde gestartet.");
+
+    FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+    fprintf(logfile, "getartet");
 }
 
 void create_pid_file()
