@@ -242,10 +242,12 @@ void ausgabe(){
                 printf("%s", puffer);
             }
             fclose(pid_file);
+            printf("Warten Sie bitte einen kurzen Moment..");
 
     
         } else if(daemonInformationen == 0){
             printf("Die Informationen wurden gespeichert, Sie werden aber nicht ausgegeben.\n");
+            printf("Warten Sie bitte einen kurzen Moment..");
         }
 }
 
@@ -271,7 +273,7 @@ void run_daemon()
         
 
         // Überprüfe, ob der Daemon beendet werden soll
-        printf("Warten Sie einen kurzen Moment..");
+    
         printf("Moechten Sie den Daemon beenden? Wenn Sie ihn beenden möchten, drücken Sie die '1', wenn Sie ihn weiterlaufen lassen möchten, dann erneut die '0'. \n");
         scanf("%d", &daemonBeenden);
         if (daemonBeenden == 1)
