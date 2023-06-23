@@ -113,63 +113,6 @@ void check_daemon_status()
     }
 }
 
-void prozessInformationen(){
-    //Prozess ID erhalten
-    pid_t pid = getpid();
-    printf("Elternprozess ID: %d\n", pid);
-
-    //Rechte erhalten
-    mode_t mode = umask(0);
-    umask(mode);
-    printf("Rechte: %o\n", mode);
-
-    //Benutzer ID erhalten
-    uid_t uid = getuid();
-    printf("Gruppen ID: %d\n", uid);
-
-    //Gruppen Id erhalten 
-    gid_t = getgid();
-    pritnf("Gruppen ID. %d\n", gid);
-
-    //RAM- Ausnutzung erhalten
-    char statm_path[64];
-    sprintf(statm_path, "/proc/%d"statm", pid");
-
-    int statm_fd = open(statm_path, O_RDONLY);
-    if(statm_fd != -1){
-        char buffer[256];
-        ssize_t bytesRead = read(statm_fd, buffer, sizeof(buffer) -1);
-        close(statm_fd);
-
-        if(bytesRead > 0){
-            buffer[bytesRead] = '\0';
-
-            unsigned long size, resident, share, text, lib, data, dit;
-            sscanf(buffer, "%lu %lu %lu %lu %lu %lu %lu", &size, &resident, &share, &text, &lib, &data, &dt);
-
-            printf("RAM-Ausnutzung: \n")printf("Gesamtgroeße RAM Ausnutzung: %.2f MB\n", (float)size / 1024);
-
-            printf("Speicherunterteilung: \n");
-            printf("Resident: %.2f MB\n", (float)resident / 1024);
-            printf("Shared: %.2f MB\n", (float)share / 1024);
-            printf("Text: %.2f MB\n", (float)text / 1024);
-            printf("Library: %.2f MB\n", (float)lib / 1024);
-            printf("Data + Stack:" %.2f MB\n, (float)data / 1024)
-            printf("Dirty Pages: %.2f MB\n", (float)dt / 1024)
-        }
-        else {
-            printf("Fehler bei Lesen der RAM-Ausnutzung.\n")
-        }
-
-        //CPU-Zeit erhalten
-        clock_t cpu_time = clock();
-        double cpu_seconds = (double) cpu_time / CLOCKS_PER_SEC;
-        printf("CPU-Zeit: %.2f Sekunden\n", cpu_seconds);
-    }
-
-}
-
-
 
 struct ProzessInfo
 {
