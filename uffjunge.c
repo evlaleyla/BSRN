@@ -235,12 +235,12 @@ void ausgabe()
             printf("%s", puffer);
         }
         fclose(pid_file);
-        printf("Warten Sie bitte einen kurzen Moment..");
+        printf("\nWarten Sie bitte einen kurzen Moment....\n");
     }
     else if (daemonInformationen == 0)
     {
         printf("Die Informationen wurden gespeichert, Sie werden aber nicht ausgegeben.\n");
-        printf("Warten Sie bitte einen kurzen Moment..\n");
+        printf("\nWarten Sie bitte einen kurzen Moment..\n");
     }
 }
 
