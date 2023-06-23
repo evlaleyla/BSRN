@@ -329,10 +329,6 @@ int main()
     setlogmask(LOG_UPTO(LOG_NOTICE));
     openlog("Daemon", LOG_PID, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
    
-   /* if(syslog(LOG_ERR, "Fehler beim öffnen der Datei") < 0){
-        perror("Fehler beim protokollieren der Meldung\n");
-        exit(1);
-    }*/
     printf("Wollen Sie einen Daemon starten?\nGeben Sie bitte '1' ein, damit ein Daemon gestartet wird.\nGeben Sie bitte '0' ein, damit kein Daemon gestartet wird.");
     scanf("%d", &daemonStart);
     switch (daemonStart)
