@@ -27,3 +27,26 @@ char statm_path[64];
         }
         else {
             printf("Fehler bei Lesen der RAM-Ausnutzung.\n")
+
+
+
+
+
+
+
+struct sysinfo sys_info;
+    
+    if (sysinfo(&sys_info) != 0) {
+        printf("Fehler beim Abrufen der Systeminformationen.\n");
+        return 1;
+    }
+    
+    unsigned long total_ram = sys_info.totalram * sys_info.mem_unit;
+    unsigned long free_ram = sys_info.freeram * sys_info.mem_unit;
+    unsigned long used_ram = total_ram - free_ram;
+    
+    printf("Gesamter RAM: %lu bytes\n", total_ram);
+    printf("Verfügbarer RAM: %lu bytes\n", free_ram);
+    printf("Verwendeter RAM: %lu bytes\n", used_ram);
+    
+    return 0;
