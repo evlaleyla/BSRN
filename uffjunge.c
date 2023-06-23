@@ -98,7 +98,7 @@ void create_pid_file()
     if (!pid_file)
     {
         perror("Fehler beim Erstellen der PID-Datei\n");
-        syslog(LOG_ERR, "Fehler beim Erstellen der PID-Datei");
+        syslog(LOG_ERR, "Fehler beim Erstellen der PID-Datei.");
         exit(1);
     } else {
     fprintf(pid_file, "%d", getpid()); // Schreibe die PID des aktuellen Prozesses in die Datei
@@ -130,7 +130,7 @@ void check_daemon_status()
     else
     {
         printf("Daemon ist nicht aktiv\n");
-        syslog(LOG_INFO, "Daemon ist nicht aktiv");
+        syslog(LOG_INFO, "Daemon ist nicht aktiv.");
         exit(1);
     }
 }
@@ -154,7 +154,7 @@ struct ProzessInfo get_process_info(pid_t pid)
     if (!statm_file)
     {
         perror("Fehler beim Lesen der Prozessinformationen\n");
-        syslog(LOG_ERR, "Fehler beim Lesen der Prozessinformationen");
+        syslog(LOG_ERR, "Fehler beim Lesen der Prozessinformationen.");
         exit(1);
     }
 
@@ -168,8 +168,8 @@ struct ProzessInfo get_process_info(pid_t pid)
     
     if (!stat_file)
     {
-        perror("Fehler beim Lesen der Prozessinformationen\n");
-        syslog(LOG_ERR,"Fehler beim Lesen der Prozessinformationen");
+        perror("Fehler beim Lesen der Prozessinformationen\n.");
+        syslog(LOG_ERR,"Fehler beim Lesen der Prozessinformationen.");
         exit(1);
     }
 
@@ -245,7 +245,7 @@ void ausgabe(){
 
     
         } else if(daemonInformationen == 0){
-            printf("Die Informationen wurden gespeichert, sie werden aber nicht ausgegeben.\n");
+            printf("Die Informationen wurden gespeichert, Sie werden aber nicht ausgegeben.\n");
         }
 }
 
@@ -271,7 +271,8 @@ void run_daemon()
         
 
         // Überprüfe, ob der Daemon beendet werden soll
-        printf("Moechten Sie den Daemon beenden? Wenn Sie ihn beenden möchten, drücken Sie die 1\n");
+        printf("Warten Sie einen kurzen Moment..");
+        printf("Moechten Sie den Daemon beenden? Wenn Sie ihn beenden möchten, drücken Sie die '1', wenn Sie ihn weiterlaufen lassen möchten, dann erneut die '0'. \n");
         scanf("%d", &daemonBeenden);
         if (daemonBeenden == 1)
         {
