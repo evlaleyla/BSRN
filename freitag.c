@@ -222,7 +222,7 @@ void run_daemon()
             printf("Daemon wird gestoppt..");
            printf("3");
     
-    //FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
    
   // if(!pid_file){
    // perror("Fehler beim lesen der PID-Datei\n");
@@ -230,11 +230,11 @@ void run_daemon()
   // }
 
     printf("4");
-  //  pid_t pid;
-  //  fscanf(pid_file, "%d", &pid);
-  //  fclose(pid_file);
+   pid_t pid;
+    fscanf(pid_file, "%d", &pid);
+    fclose(pid_file);
     
-    /*
+    
     if (kill(pid, SIGTERM) == 0)
     {
         printf("Daemon wurde beendet\n");
@@ -244,7 +244,7 @@ void run_daemon()
     }else {
     perror("Fehler beim Beenden des Daemons\n");
         exit(1);
-    }  */     
+    } 
         } else if(daemonBeenden == 0){
             printf("daemon läuft weiter");
         }
