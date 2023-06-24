@@ -320,19 +320,22 @@ void run_daemon()
     {
 
         FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
-        fprintf(logfile, "Der Daemon laeeuft orndungsgemaeß weiter.\n");
+        fprintf(logfile, "Der Daemon laeuft orndungsgemaeß weiter.\n");
         fprintf(logfile, "Daemon schlaeft...\n");
         fclose(logfile);
+        printf("Warten Sie einen kurzen Moment..\n");
         // syslog(LOG_INFO, "Daemon schläft...");
         sleep(5); // Warte für 5 Sekunden
 
         // Überprüfe, ob der Daemon beendet werden soll
-        printf("Warten Sie einen kurzen Moment../n");
-        printf("Moechten Sie den Daemon beenden? Wenn Sie ihn beenden möchten, drücken Sie die '1', wenn Sie ihn weiterlaufen lassen möchten, dann erneut die '0'. \n");
+        
+        printf("Wenn Sie moechte dass der Daemon witerlaeuft, dann druecken Sie bitte die \"0\". \nWenn Sie moechten dass der Daemon beendet wird, dann geben sie im Terminal bitte \"kill -15 <pid>\" ein.\n");
         scanf("%d", &daemonBeenden);
-        if (daemonBeenden == 1)
+        if (daemonBeenden == 0)
         {
+            running = 1;
 
+            /*
             // printf("Daemon wird gestoppt..");
             //  syslog(LOG_INFO, "Daemon wird versucht gestoppt..");
 
@@ -379,10 +382,12 @@ void run_daemon()
             {
                 perror("Fehler");
                 exit(1);
+                */
             }
-            if (daemonBeenden == 0)
+            
+            else 
             {
-                running = 1;
+                printf("Falsche Einfabe.\n")
                 /*
                 printf("Der Daemon läuft ordnungsgemäß weiter.\n");
                 FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
@@ -393,7 +398,7 @@ void run_daemon()
             }
         }
     }
-}
+
 
 int main()
 {
@@ -404,9 +409,9 @@ int main()
     FILE *logFile;
     logFile = fopen("logdatei.log", "a");
 
-    //openlog("Daemon", LOG_PID, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
+    // openlog("Daemon", LOG_PID, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
 
-    printf("Wollen Sie einen Daemon starten?\nGeben Sie bitte '1' ein, damit ein Daemon gestartet wird.\nGeben Sie bitte '0' ein, damit kein Daemon gestartet wird.");
+    printf("Wollen Sie einen Daemon starten?\nGeben Sie bitte \"1\" ein, damit ein Daemon gestartet wird.\nGeben Sie bitte \"0\" ein, damit kein Daemon gestartet wird.");
     scanf("%d", &daemonStart);
     switch (daemonStart)
     {
@@ -415,7 +420,6 @@ int main()
         start_daemon();
         ausgabe();
         run_daemon();
-
         break;
     case 0:
         printf("Eingabe gespeichert. Der Daemon wird nicht gestartet.\n");
