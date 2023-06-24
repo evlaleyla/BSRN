@@ -1,0 +1,48 @@
+struct ProzessInfo
+{
+
+    unsigned long long speichernutzung;
+    mode_t prozess_rechte; // Neue Ergänzung für die Prozessrechte
+};
+struct ProzessInfo get_process_info(pid_t pid)
+{
+
+    struct ProzessInfo info;
+    char statm_path[256];
+    snprintf(statm_path, sizeof(statm_path), "/proc/%d/statm", pid);
+    FILE *statm_file = fopen(statm_path, "r");
+
+    if (!statm_file)
+    {
+        perror("Fehler beim Lesen der Prozessinformationen\n");
+        FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(log_file, "Fehler beim Lesen der Prozessinformationen.\n");
+        fclose(log_file);
+        exit(1);
+    }
+
+    fscanf(statm_file, "%llu", &info.speichernutzung);
+    info.speichernutzung *= sysconf(_SC_PAGESIZE);
+    fclose(statm_file);
+
+    char stat_path[256];
+    snprintf(stat_path, sizeof(stat_path), "/proc/%d/stat", pid);
+    FILE *stat_file = fopen(stat_path, "r");
+
+    if (!stat_file)
+    {
+        perror("Fehler beim Lesen der Prozessinformationen\n.");
+        FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(log_file, "Fehler beim Lesen der Prozessinformationen.\n");
+        fclose(log_file);
+        exit(1);
+    }
+
+    // fscanf(stat_file, "%d", &info.prozess_id);
+    fseek(stat_file, 256, SEEK_CUR);
+    //  fscanf(stat_file, "%d %d", &info.prozess_uid, &info.prozess_gid);
+    fseek(stat_file, 10, SEEK_CUR);                // Überspringe die nächsten 10 Felder im stat-Datei-Format
+    fscanf(stat_file, "%o", &info.prozess_rechte); // Lese die Prozessrechte im oktalen Format ein
+    fclose(stat_file);
+    return info;
+}
