@@ -138,7 +138,7 @@ void ueberpruefe_daemon_status()
     fclose(pid_file);
     if (kill(pid, 0) == 0)
     {
-        printf("Daemon laeuuft (PID: %d)\n", pid);
+        printf("Daemon laeuft (PID: %d)\n", pid);
         FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
         fprintf(log_file, "Daemon laeuft (PID: %d)\n", pid);
         fclose(log_file);
@@ -293,6 +293,7 @@ int main()
         ueberpruefe_datei_vorhanden();
         starte_daemon();
         speichereProzessinformationen();
+        ausgeben_der_Infos();
         daemon_ausfuehren();
         break;
     case 0:
