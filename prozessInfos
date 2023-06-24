@@ -24,8 +24,13 @@ void speichereRamVerbrauch() {
             if (output_file != NULL) {
                 fprintf(output_file, "RAM Ausnutzung:\n");
                 fprintf(output_file, "Gesamtgröße der RAM Ausnutzung: %.2f MB\n", (float)size / 1024);
-                fprintf(output_file, "Resident: %.2f MB\n", (float)share / 1024);
-                fprintf(output_file, "Shared: %.2f MB\n", (float)text / 1024);
+                fprintf(output_file, "Resident: %.2f MB\n", (float)resident / 1024);
+                fprintf(output_file, "Shared: %.2f MB\n", (float)share / 1024);
+                fprintf(output_file, "Text: %.2f MB\n", (float)text / 1024);
+                fprintf(output_file, "Bibliotheken: %.2f MB\n", (float)lib / 1024);
+                fprintf(output_file, "Daten: %.2f MB\n", (float)data / 1024);
+                fprintf(output_file, "Datenseiten (Dirty): %.2f MB\n", (float)dt / 1024);
+
                 fclose(output_file);
                 printf("RAM-Verbrauch erfolgreich in 'ram_verbrauch.txt' gespeichert.\n");
             } else {
