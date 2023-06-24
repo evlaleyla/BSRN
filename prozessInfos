@@ -1,28 +1,43 @@
-void prozessinfos(){
-    pid_t pid = getpid();   //Prozess ID
-    uid_t uid = getuid();   //Benutzer ID
-    gid_t gid = getgid();   //Gruppen ID
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <string.h>
 
-    //RAM
+void speichereRamVerbrauch() {
+    pid_t pid = getpid();
     char statm_path[64];
-    snprintf(statm_path, "proc/%d/statm", pid);
+    sprintf(statm_path, "/proc/%d/statm", pid);
 
     int statm_fd = open(statm_path, O_RDONLY);
-    if(statm_fd != -1){
+    if (statm_fd != -1) {
         char buffer[256];
-        ssize_t bytesRead = read(statm_fd, buffer, sizeof(buffer) -1);
+        ssize_t bytesRead = read(statm_fd, buffer, sizeof(buffer) - 1);
         close(statm_fd);
 
-        if (bytesRead > 0){
+        if (bytesRead > 0) {
             buffer[bytesRead] = '\0';
             unsigned long size, resident, share, text, lib, data, dt;
             sscanf(buffer, "%lu %lu %lu %lu %lu %lu %lu", &size, &resident, &share, &text, &lib, &data, &dt);
 
-            printf("RAM Ausnutzung:\n");
-            printf("Gesamtgroeße der Ram Ausnutzung: %.2f MB\n", (float)size / 1024);
-            printf("Resident: %.2f MB\n", (float)share / 1024);
-            printf("Shared: %.2f MB\n", (float) / 1024);
+            FILE* output_file = fopen("ram_verbrauch.txt", "w");
+            if (output_file != NULL) {
+                fprintf(output_file, "RAM Ausnutzung:\n");
+                fprintf(output_file, "Gesamtgröße der RAM Ausnutzung: %.2f MB\n", (float)size / 1024);
+                fprintf(output_file, "Resident: %.2f MB\n", (float)share / 1024);
+                fprintf(output_file, "Shared: %.2f MB\n", (float)text / 1024);
+                fclose(output_file);
+                printf("RAM-Verbrauch erfolgreich in 'ram_verbrauch.txt' gespeichert.\n");
+            } else {
+                printf("Fehler beim Öffnen der Ausgabedatei.\n");
+            }
         }
     } else {
-        prinf("Fehler beim Lesen der RAM-Ausnutzung.\n")
+        printf("Fehler beim Lesen der RAM-Ausnutzung.\n");
     }
+}
+
+int main() {
+    speichereRamVerbrauch();
+    return 0;
+}
