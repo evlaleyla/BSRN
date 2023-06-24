@@ -320,6 +320,7 @@ void run_daemon()
     {
 
         FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(logfile, "Der Daemon laeeuft orndungsgemaeß weiter.\n");
         fprintf(logfile, "Daemon schlaeft...\n");
         fclose(logfile);
         // syslog(LOG_INFO, "Daemon schläft...");
@@ -381,10 +382,13 @@ void run_daemon()
             }
             if (daemonBeenden == 0)
             {
+                running = 1;
+                /*
                 printf("Der Daemon läuft ordnungsgemäß weiter.\n");
                 FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
                 fprintf(logfile, "Der Daemon laeuft ordnungsgemaeß weiter.\n");
                 fclose(logfile);
+                */
                 // syslog(LOG_INFO, "Der Daemon läuft ordnungsgemäß weiter.");
             }
         }
