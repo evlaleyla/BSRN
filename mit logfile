@@ -387,7 +387,7 @@ void run_daemon()
             
             else 
             {
-                printf("Falsche Einfabe.\n")
+                printf("Falsche Einfabe.\n");
                 /*
                 printf("Der Daemon läuft ordnungsgemäß weiter.\n");
                 FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
