@@ -1,0 +1,17 @@
+/*
+    // Überprüfen, ob das Programm bereits mit Superuser-Rechten ausgeführt wird
+    if (getuid() == 0)
+    {
+        printf("Das Programm wird bereits mit Superuser-Rechten ausgeführt.\n");
+        FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(log_file, "Das Programm wird bereits mit Superuser-Rechten ausgeführt\n");
+        fclose(log_file);
+    }
+    if (setuid(0) == 0)
+    {
+        printf("Superuser-Rechte erfolgreich erhalten.\n");
+        FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(log_file, "Superuser-Rechte erfolgreich erhalten\n");
+        fclose(log_file);
+    }
+*/
