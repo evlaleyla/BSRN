@@ -159,7 +159,7 @@ void speichereProzessinformationen()
     uid_t uid = getuid(); // Benutzer ID
     gid_t gid = getgid(); // Gruppen ID
 
-    // Rechte erhalten
+    //Rechte erhalten
     mode_t mode = umask(0);
     umask(mode);
     printf("Rechte: %o\n", mode);
@@ -167,9 +167,6 @@ void speichereProzessinformationen()
     // CPU-Zeit
     clock_t cpu_zeit = clock();
     double cpu_seconds = (double)cpu_zeit / CLOCKS_PER_SEC;
-    char cpu_buffer[64];
-    snprintf(cpu_buffer, sizeof(cpu_buffer), "CPU-Zeit: %.2f Sekunden\n, cpu_seconds");
-    printf("%s, cpu_buffer");
     printf("CPU-Zeit: %.2f Sekunden\n", cpu_seconds);
 
     // RAM-Ausnutzung
@@ -205,7 +202,7 @@ void speichereProzessinformationen()
                 fprintf(pid_file, "Bibliotheken: %.2f MB\n", (float)lib / 1024);
                 fprintf(pid_file, "Daten: %.2f MB\n", (float)data / 1024);
                 fprintf(pid_file, "Datenseiten (Dirty): %.2f MB\n", (float)dt / 1024);
-                frpintf(pid_file, "%s", cpu_buffer);
+                // fprintf("CPU-Zeit: %.2f Sekunden\n", cpu_seconds);
                 fclose(pid_file);
             }
             else
