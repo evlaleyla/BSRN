@@ -68,22 +68,6 @@ void starte_daemon()
         exit(1);
     }
 
-    // Überprüfen, ob das Programm bereits mit Superuser-Rechten ausgeführt wird
-    if (getuid() == 0)
-    {
-        printf("Das Programm wird bereits mit Superuser-Rechten ausgeführt.\n");
-        FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
-        fprintf(log_file, "Das Programm wird bereits mit Superuser-Rechten ausgeführt\n");
-        fclose(log_file);
-    }
-    if (setuid(0) == 0)
-    {
-        printf("Superuser-Rechte erfolgreich erhalten.\n");
-        FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
-        fprintf(log_file, "Superuser-Rechte erfolgreich erhalten\n");
-        fclose(log_file);
-    }
-
     umask(077); // Setze die Zugriffsrechte für Dateien
 
     // Startzeit ermitteln
@@ -118,7 +102,7 @@ void ueberpruefe_datei_vorhanden()
     }
     fclose(pid_file);
     FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
-    fprintf(log_file, "Datei ist vorhanden.\n");
+    fprintf(log_file, "\nDatei ist vorhanden.\n");
     fclose(log_file);
 }
 
@@ -215,7 +199,7 @@ void speichereProzessinformationen()
         printf("Fehler beim Lesen der RAM-Ausnutzung.\n");
     }
     FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
-    fprintf(log_file, "\nDaemon gestartet (PID: %d)\n", getpid());
+    fprintf(log_file, "Daemon gestartet (PID: %d)\n", getpid());
     fclose(log_file);
 }
 
