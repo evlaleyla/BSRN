@@ -177,6 +177,7 @@ void speichereProzessinformationen()
                 fprintf(pid_file, "Benutzer ID2: %d\n", uid);
                 fprintf(pid_file, "GruppenID2: %d\n", gid);
                 fprintf(pid_file, "Prozessrechte: %o\n", mode);
+                fprintf(pid_file, "CPU-Zeit: %s", cpu_buffer);
                 fprintf(pid_file, "RAM Ausnutzung:\n");
                 fprintf(pid_file, "Gesamtgröße der RAM Ausnutzung: %.2f MB\n", (float)size / 1024);
                 fprintf(pid_file, "Resident: %.2f MB\n", (float)resident / 1024);
@@ -185,7 +186,7 @@ void speichereProzessinformationen()
                 fprintf(pid_file, "Bibliotheken: %.2f MB\n", (float)lib / 1024);
                 fprintf(pid_file, "Daten: %.2f MB\n", (float)data / 1024);
                 fprintf(pid_file, "Datenseiten (Dirty): %.2f MB\n", (float)dt / 1024);
-                fprintf(pid_file, "CPU-Zeit: %s", cpu_buffer);
+               
                 fclose(pid_file);
             }
             else
