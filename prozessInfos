@@ -263,16 +263,10 @@ void speichereRamVerbrauch() {
 
 }
 void erfasseCPUTime() {
-    struct timespec cpu_time;
-
-    if (clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &cpu_time) == 0) {
-        double cpu_seconds = cpu_time.tv_sec + cpu_time.tv_nsec / 1e9;
-        printf("CPU-Zeit des Prozesses: %.2f Sekunden\n", cpu_seconds);
-    } else {
-        printf("Fehler beim Erfassen der CPU-Zeit.\n");
-    }
+   clock_t cpu_zeit = clock();
+   double cpu_seconds = (double)cpu_zeit / CLOCKS_PER_SEC;
+   printf("CPU-Zeit: %.2f Sekunden\n", cpu_seconds);
 }
-
 void speichern_der_Infos()
 {
     check_daemon_status();
@@ -466,7 +460,7 @@ int main()
         create_pid_file();
         start_daemon();
         speichereRamVerbrauch();
-        erfasseCPUTime()
+        erfasseCPUTime();
         run_daemon();
         break;
     case 0:
