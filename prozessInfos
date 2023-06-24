@@ -1,8 +1,229 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <signal.h>
 #include <string.h>
+#include <fcntl.h>
+#include <time.h>
+#include <syslog.h>
+#include <sys/sysinfo.h>
+
+void start_daemon()
+{
+    int session;
+    pid_t pid = fork(); // Erstelle einen Kindprozess
+
+    if (pid < 0)
+    {
+        perror("Fehler beim Starten des Daemons\n");
+        FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(logfile, "Fehler beim Starten des Daemons\n");
+        fclose(logfile);
+
+        // syslog(LOG_ERR, "Fehler beim Starten des Daemons");
+        exit(1);
+    }
+
+    if (pid == 0)
+    {
+        session = setsid();
+
+        if (session < 0)
+        {
+            perror("Fehler beim Erstellen einer neuen Sitzung\n");
+            FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+            fprintf(logfile, "Fehler beim Erstellen einer neuen Sitzung\n");
+            fclose(logfile);
+
+            // syslog(LOG_ERR, "Fehler beim Erstellen einer neuen Sitzung");
+
+            exit(1);
+        }
+        if (session >= 0)
+        {
+            printf("Neue Session wurde erstellt. Die Session-ID %d\n", session);
+            FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+            fprintf(logfile, "Neue Session wurde erstellt\n");
+            fclose(logfile);
+
+            // syslog(LOG_INFO, "Neue Session wurde erstellt.");
+        }
+        char *arguments[] = {"/home/evlaleyla/Schreibtisch/BSRN Projekt/samstag.c", NULL};
+
+        if (execvp("/home/evlaleyla/Schreibtisch/BSRN Projekt/helloworld", arguments) < 0)
+        {
+            perror("Fehler beim Ausführen des Programms\n");
+            FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+            fprintf(logfile, "Fehler beim Ausführen des Programms\n");
+            fclose(logfile);
+
+            // syslog(LOG_ERR, "Fehler beim Ausführen des Programms");
+            exit(1);
+        }
+    }
+
+    signal(SIGHUP, SIG_IGN); // Ignoriere Sighup
+
+    // Verzeichniswechsel
+    if (chdir("/") < 0)
+    {
+        perror("Fehler beim Verzeichniswechsel\n");
+        FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(logfile, "Fehler beim Verzeichniswechsel\n");
+        fclose(logfile);
+
+        // syslog(LOG_ERR, "Fehler beim Verzeichniswechsel");
+        exit(1);
+    }
+
+    // Überprüfen Sie, ob das Programm bereits mit Superuser-Rechten ausgeführt wird
+    if (getuid() == 0)
+    {
+        printf("Das Programm wird bereits mit Superuser-Rechten ausgeführt.\n");
+        FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(logfile, "Das Programm wird bereits mit Superuser-Rechten ausgeführt\n");
+        fclose(logfile);
+
+        // syslog(LOG_INFO, "Das Programm wird bereits mit Superuser-Rechten ausgeführt.");
+    }
+    if (setuid(0) == 0)
+    {
+        printf("Superuser-Rechte erfolgreich erhalten.\n");
+        FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(logfile, "Superuser-Rechte erfolgreich erhalten\n");
+        fclose(logfile);
+
+        // syslog(LOG_INFO, "Superuser-Rechte erfolgreich erhalten.");
+    }
+
+    umask(077); // Setze die Zugriffsrechte für Dateien
+
+    time_t rawtime;
+    struct tm *timeinfo;
+    char buffer[80];
+
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
+    printf("Daemon wurde gestartet um: %s\n", buffer);
+    FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+    fprintf(logfile, "Daemon wurde gestartet um: %s\n", buffer);
+    fclose(logfile);
+
+    // syslog(LOG_INFO, "Daemon wurde gestartet um: %s\n", buffer);
+}
+
+void create_pid_file()
+{
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "w");
+    if (!pid_file)
+    {
+        perror("Fehler beim Erstellen der PID-Datei\n");
+        FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(logfile, "Fehler beim Erstellen der PID-Datei\n");
+        fclose(logfile);
+        // syslog(LOG_ERR, "Fehler beim Erstellen der PID-Datei.");
+        exit(1);
+    }
+    else
+    {
+        fprintf(pid_file, "%d", getpid()); // Schreibe die PID des aktuellen Prozesses in die Datei
+    }
+    fclose(pid_file);
+    FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+    fprintf(logfile, "Datei wurde erstellt\n");
+    fclose(logfile);
+    // syslog(LOG_INFO, "Datei wurde erstellt.");
+}
+
+void check_daemon_status()
+{
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
+    if (!pid_file)
+    {
+        perror("Fehler beim Lesen der PID-Datei\n");
+        FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(logfile, "Fehler beim Lesen der PID-Datei\n");
+        fclose(logfile);
+        // syslog(LOG_ERR, "Fehler beim Lesen der PID-Datei");
+        exit(1);
+    }
+    pid_t pid;
+    fscanf(pid_file, "%d", &pid);
+    fclose(pid_file);
+    if (kill(pid, 0) == 0)
+    {
+        printf("Daemon läuft (PID: %d)\n", pid);
+        FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(logfile, "Daemon laeuft\n");
+        fclose(logfile);
+        // syslog(LOG_INFO, "Daemon läuft");
+    }
+    else
+    {
+        printf("Daemon ist nicht aktiv\n");
+        FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(logfile, "Daemon ist nicht aktiv.\n");
+        fclose(logfile);
+        // syslog(LOG_INFO, "Daemon ist nicht aktiv.");
+        exit(1);
+    }
+}
+
+struct ProzessInfo
+{
+
+    unsigned long long speichernutzung;
+    mode_t prozess_rechte; // Neue Ergänzung für die Prozessrechte
+};
+struct ProzessInfo get_process_info(pid_t pid)
+{
+
+    struct ProzessInfo info;
+    char statm_path[256];
+    snprintf(statm_path, sizeof(statm_path), "/proc/%d/statm", pid);
+    FILE *statm_file = fopen(statm_path, "r");
+
+    if (!statm_file)
+    {
+        perror("Fehler beim Lesen der Prozessinformationen\n");
+        FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(logfile, "Fehler beim Lesen der Prozessinformationen.\n");
+        fclose(logfile);
+        // syslog(LOG_ERR, "Fehler beim Lesen der Prozessinformationen.");
+        exit(1);
+    }
+
+    fscanf(statm_file, "%llu", &info.speichernutzung);
+    info.speichernutzung *= sysconf(_SC_PAGESIZE);
+    fclose(statm_file);
+
+    char stat_path[256];
+    snprintf(stat_path, sizeof(stat_path), "/proc/%d/stat", pid);
+    FILE *stat_file = fopen(stat_path, "r");
+
+    if (!stat_file)
+    {
+        perror("Fehler beim Lesen der Prozessinformationen\n.");
+        FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(logfile, "Fehler beim Lesen der Prozessinformationen.\n");
+        fclose(logfile);
+        // syslog(LOG_ERR, "Fehler beim Lesen der Prozessinformationen.");
+        exit(1);
+    }
+
+    //fscanf(stat_file, "%d", &info.prozess_id);
+    fseek(stat_file, 256, SEEK_CUR);
+  //  fscanf(stat_file, "%d %d", &info.prozess_uid, &info.prozess_gid);
+    fseek(stat_file, 10, SEEK_CUR);                // Überspringe die nächsten 10 Felder im stat-Datei-Format
+    fscanf(stat_file, "%o", &info.prozess_rechte); // Lese die Prozessrechte im oktalen Format ein
+    fclose(stat_file);
+    return info;
+}
 
 void speichereRamVerbrauch() {
     pid_t pid = getpid();
@@ -20,7 +241,7 @@ void speichereRamVerbrauch() {
             unsigned long size, resident, share, text, lib, data, dt;
             sscanf(buffer, "%lu %lu %lu %lu %lu %lu %lu", &size, &resident, &share, &text, &lib, &data, &dt);
 
-            FILE* output_file = fopen("ram_verbrauch.txt", "w");
+            FILE* output_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "w");
             if (output_file != NULL) {
                 fprintf(output_file, "RAM Ausnutzung:\n");
                 fprintf(output_file, "Gesamtgröße der RAM Ausnutzung: %.2f MB\n", (float)size / 1024);
@@ -30,7 +251,6 @@ void speichereRamVerbrauch() {
                 fprintf(output_file, "Bibliotheken: %.2f MB\n", (float)lib / 1024);
                 fprintf(output_file, "Daten: %.2f MB\n", (float)data / 1024);
                 fprintf(output_file, "Datenseiten (Dirty): %.2f MB\n", (float)dt / 1024);
-
                 fclose(output_file);
                 printf("RAM-Verbrauch erfolgreich in 'ram_verbrauch.txt' gespeichert.\n");
             } else {
@@ -42,7 +262,208 @@ void speichereRamVerbrauch() {
     }
 }
 
-int main() {
-    speichereRamVerbrauch();
+void speichern_der_Infos()
+{
+    check_daemon_status();
+    struct ProzessInfo info = get_process_info(getpid());
+
+    struct sysinfo sys_info;
+
+    if (sysinfo(&sys_info) != 0)
+    {
+        printf("Fehler beim Abrufen der Systeminformationen.\n");
+        FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(logfile, "Fehler beim Abrufen der Systeminformationen.\n");
+        fclose(logfile);
+        // syslog(LOG_ERR, "Fehler beim Abrufen der Systeminformationen.");
+
+        exit(1);
+    }
+
+    pid_t pid = getpid();
+    uid_t uid = getuid();
+    gid_t gid = getgid();
+
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "w");
+
+    fprintf(pid_file, "Prozess ID2: %d\n", pid);
+    fprintf(pid_file, "Benutzer ID2: %d\n", uid);
+    fprintf(pid_file, "GruppenID2: %d\n", gid);
+    fprintf(pid_file, "Speichernutzung: %llu Bytes\n", info.speichernutzung); // Schreibe die SPEICHERNUTZUNG des aktuellen Prozesses in die Datei
+    fprintf(pid_file, "Prozessrechte: %o\n", info.prozess_rechte);            // Schreibe die RECHTE des aktuellen Prozesses in die Datei
+    //fprintf(pid_file, "gesamter RAM: %lu bytes\n", total_ram);
+   // fprintf(pid_file, "verfügbarer RAM: %lu bytes\n", free_ram);
+   // fprintf(pid_file, "Verwendeter RAM: %lu bytes\n");
+
+    FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+    fprintf(logfile, "\nDaemon gestartet (PID: %d)\n", getpid());
+    fclose(logfile);
+    // syslog(LOG_INFO, "\nDaemon gestartet (PID: %d)", getpid()); // Protokolliere eine Nachricht
+
+    fclose(pid_file);
+}
+
+void ausgeben_der_Infos()
+{
+    check_daemon_status();
+
+    // hier von speichern
+
+    int daemonInformationen;
+
+    printf("Möchten Sie Informationen erhalten? Wenn Ja, dann tippen Sie bitte '1', wenn Nein, dann tippen Sie '0'.\n");
+    scanf("%d", &daemonInformationen);
+
+    if (daemonInformationen == 1)
+    {
+        FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
+        if (!pid_file)
+        {
+            printf("Fehler beim Öffnen der Datei.\n");
+            FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+            fprintf(logfile, "Fehler beim Öffnen der Datei.\n");
+            fclose(logfile);
+            // syslog(LOG_ERR, "Fehler beim Öffnen der Datei.");
+            exit(1);
+        }
+        char puffer[256]; // angenommene maxiale zeilenlänge
+
+        while (fgets(puffer, sizeof(puffer), pid_file) != NULL)
+        {
+            printf("%s", puffer);
+        }
+        fclose(pid_file);
+    }
+    else if (daemonInformationen == 0)
+    {
+        printf("Die Informationen wurden gespeichert, Sie werden aber nicht ausgegeben.\n");
+    }
+}
+
+void run_daemon()
+{
+    int running = 1;
+    int daemonBeenden;
+    time_t rawtime;
+    struct tm *timeinfo;
+    char buffer[80];
+
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
+
+    while (running)
+    {
+
+        FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+        fprintf(logfile, "Der Daemon laeuft orndungsgemaeß weiter.\n");
+        fprintf(logfile, "Daemon schlaeft...\n");
+        fclose(logfile);
+        printf("Warten Sie einen kurzen Moment..\n");
+        // syslog(LOG_INFO, "Daemon schläft...");
+        sleep(5); // Warte für 5 Sekunden
+
+        // Überprüfe, ob der Daemon beendet werden soll
+
+        printf("Wenn Sie moechte dass der Daemon weiterlaeuft, dann druecken Sie bitte die \"0\". \nWenn Sie moechten dass der Daemon beendet wird, dann geben sie im Terminal bitte \"kill -15 <pid>\" ein.\n");
+        scanf("%d", &daemonBeenden);
+        if (daemonBeenden == 0)
+        {
+            running = 1;
+
+            /*
+            // printf("Daemon wird gestoppt..");
+            //  syslog(LOG_INFO, "Daemon wird versucht gestoppt..");
+
+            FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
+
+            if (!pid_file)
+            {
+                perror("Fehler beim lesen der PID-Datei\n");
+                FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+                fprintf(logfile, "Fehler beim Lesen der PID-Datei.\n");
+                fclose(logfile);
+                // syslog(LOG_ERR, "Fehler beim lesen der PID-Datei");
+                exit(1);
+            }
+
+            pid_t pid;
+            fscanf(pid_file, "%d", &pid);
+            fclose(pid_file);
+
+            if (kill(pid, 0) == 0)
+            {
+
+                if (kill(pid, SIGTERM) == 0)
+                {
+                    printf("Daemon wurde beendet um: %s\n", buffer);
+                    FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+                    fprintf(logfile, "Daemon wurde beendet um: %s\n", buffer);
+                    fclose(logfile);
+                    //  syslog(LOG_INFO, "Daemon wurde beendet um: %s\n", buffer);
+                    running = 0;
+                    return;
+                }
+                else
+                {
+                    perror("Fehler beim Beenden des Daemons\n");
+                    FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+                    fprintf(logfile, "Fehler beim Beenden des Daemons.\n");
+                    fclose(logfile);
+                    // syslog(LOG_ERR, "Fehler beim Beenden des Daemons");
+                    exit(1);
+                }
+            }
+            else
+            {
+                perror("Fehler");
+                exit(1);
+                */
+        }
+
+        else
+        {
+            printf("Falsche Einfabe.\n");
+            /*
+            printf("Der Daemon läuft ordnungsgemäß weiter.\n");
+            FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
+            fprintf(logfile, "Der Daemon laeuft ordnungsgemaeß weiter.\n");
+            fclose(logfile);
+            */
+            // syslog(LOG_INFO, "Der Daemon läuft ordnungsgemäß weiter.");
+        }
+    }
+}
+
+int main()
+{
+
+    int daemonStart;
+    int daemonInformationen;
+
+    FILE *logFile;
+    logFile = fopen("logdatei.log", "a");
+
+    // openlog("Daemon", LOG_PID, LOG_DAEMON); // Öffne das Syslog für den Daemon-Prozess
+
+    printf("Wollen Sie einen Daemon starten?\nGeben Sie bitte \"1\" ein, damit ein Daemon gestartet wird.\nGeben Sie bitte \"0\" ein, damit kein Daemon gestartet wird.");
+    scanf("%d", &daemonStart);
+    switch (daemonStart)
+    {
+    case 1:
+        create_pid_file();
+        start_daemon();
+        speichereRamVerbrauch();
+        run_daemon();
+        break;
+    case 0:
+        printf("Eingabe gespeichert. Der Daemon wird nicht gestartet.\n");
+        break;
+    default:
+        printf("Falsche Eingabe");
+        break;
+    }
+    closelog(); // Schließe den syslog
     return 0;
 }
