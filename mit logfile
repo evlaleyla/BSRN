@@ -57,7 +57,7 @@ void start_daemon()
         {
             perror("Fehler beim Ausführen des Programms\n");
             FILE *logfile = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
-            fprintf(logfile, "NFehler beim Ausführen des Programms\n", "a");
+            fprintf(logfile, "Fehler beim Ausführen des Programms\n");
             fclose(logfile);
 
             // syslog(LOG_ERR, "Fehler beim Ausführen des Programms");
