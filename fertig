@@ -114,7 +114,7 @@ void ueberpruefe_datei_vorhanden()
     }
     else
     {
-    fprintf(pid_file, "%d", getpid()); // Schreibe die PID des aktuellen Prozesses in die Datei
+        fprintf(pid_file, "%d", getpid()); // Schreibe die PID des aktuellen Prozesses in die Datei
     }
     fclose(pid_file);
     FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
@@ -159,10 +159,9 @@ void speichereProzessinformationen()
     uid_t uid = getuid(); // Benutzer ID
     gid_t gid = getgid(); // Gruppen ID
 
-mode_t mode = umask(0);
-umask(mode);
-printf("Rechte: %o\n", mode);
-    
+    mode_t mode = umask(0);
+    umask(mode);
+
     // CPU-Zeit
     clock_t cpu_zeit = clock();
     double cpu_seconds = (double)cpu_zeit / CLOCKS_PER_SEC;
@@ -192,7 +191,7 @@ printf("Rechte: %o\n", mode);
                 fprintf(pid_file, "Prozess ID2: %d\n", pid);
                 fprintf(pid_file, "Benutzer ID2: %d\n", uid);
                 fprintf(pid_file, "GruppenID2: %d\n", gid);
-                //fprintf(pid_file, "Prozessrechte: %o\n", info.prozess_rechte);
+                fprintf(pid_file, "Prozessrechte: %o\n", mode);
                 fprintf(pid_file, "RAM Ausnutzung:\n");
                 fprintf(pid_file, "Gesamtgröße der RAM Ausnutzung: %.2f MB\n", (float)size / 1024);
                 fprintf(pid_file, "Resident: %.2f MB\n", (float)resident / 1024);
@@ -201,7 +200,8 @@ printf("Rechte: %o\n", mode);
                 fprintf(pid_file, "Bibliotheken: %.2f MB\n", (float)lib / 1024);
                 fprintf(pid_file, "Daten: %.2f MB\n", (float)data / 1024);
                 fprintf(pid_file, "Datenseiten (Dirty): %.2f MB\n", (float)dt / 1024);
-               // fprintf("CPU-Zeit: %.2f Sekunden\n", cpu_seconds);
+                // fprintf("CPU-Zeit: %.2f Sekunden\n", cpu_seconds);
+                fclose(pid_file);
             }
             else
             {
@@ -220,7 +220,7 @@ printf("Rechte: %o\n", mode);
 
 void ausgeben_der_Infos()
 {
-    //ueberpruefe_daemon_status();
+    // ueberpruefe_daemon_status();
     int daemonInformationen;
 
     printf("Möchten Sie Informationen erhalten? Wenn Ja, dann tippen Sie bitte '1', wenn Nein, dann tippen Sie '0'.\n");
@@ -237,11 +237,14 @@ void ausgeben_der_Infos()
             fclose(log_file);
             exit(1);
         }
-        char puffer[256]; // angenommene maxiale zeilenlänge
-
-        while (fgets(puffer, sizeof(puffer), pid_file) != NULL)
+        else
         {
-            printf("%s", puffer);
+            char puffer[256]; // angenommene maxiale zeilenlänge
+
+            while (fgets(puffer, sizeof(puffer), pid_file) != NULL)
+            {
+                printf("%s", puffer);
+            }
         }
         fclose(pid_file);
     }
@@ -290,9 +293,9 @@ int main()
     switch (daemonStart)
     {
     case 1:
-        
-        starte_daemon();
         ueberpruefe_datei_vorhanden();
+        starte_daemon();
+
         speichereProzessinformationen();
         ausgeben_der_Infos();
         daemon_ausfuehren();
