@@ -114,7 +114,7 @@ void ueberpruefe_datei_vorhanden()
     }
     else
     {
-        // fprintf(pid_file, "%d", getpid()); // Schreibe die PID des aktuellen Prozesses in die Datei
+    fprintf(pid_file, "%d", getpid()); // Schreibe die PID des aktuellen Prozesses in die Datei
     }
     fclose(pid_file);
     FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
@@ -220,7 +220,7 @@ printf("Rechte: %o\n", mode);
 
 void ausgeben_der_Infos()
 {
-    ueberpruefe_daemon_status();
+    //ueberpruefe_daemon_status();
     int daemonInformationen;
 
     printf("Möchten Sie Informationen erhalten? Wenn Ja, dann tippen Sie bitte '1', wenn Nein, dann tippen Sie '0'.\n");
@@ -290,8 +290,9 @@ int main()
     switch (daemonStart)
     {
     case 1:
-        ueberpruefe_datei_vorhanden();
+        
         starte_daemon();
+        ueberpruefe_datei_vorhanden();
         speichereProzessinformationen();
         ausgeben_der_Infos();
         daemon_ausfuehren();
