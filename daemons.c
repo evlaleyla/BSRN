@@ -229,7 +229,7 @@ void daemonAusfuehren()
         }
         else
         {
-            printf("Falsche Einfabe.\n");
+            printf("Falsche Eingabe.\n");
         }
     }
 }
