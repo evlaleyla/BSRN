@@ -30,7 +30,7 @@ void starteDaemon()    //Daemon wird gestartet
         if (session < 0)    //Fehler beim Erstellen einer Sitzung
         {
             perror("Fehler beim Erstellen einer neuen Sitzung\n");
-            FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logatei.log", "a");
+            FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
             fprintf(log_file, "Fehler beim Erstellen einer neuen Sitzung\n");
             fclose(log_file);
             exit(1);
@@ -38,7 +38,7 @@ void starteDaemon()    //Daemon wird gestartet
         if (session >= 0)   //Neue Sitzung wurde erstellt. Kindprozess ist Sitzungsführer
         {
             printf("Neue Session wurde erstellt. Die Session-ID %d\n", session);
-            FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logatei.log", "a");
+            FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
             fprintf(log_file, "Neue Session wurde erstellt\n");
             fclose(log_file);
         }
@@ -47,8 +47,7 @@ void starteDaemon()    //Daemon wird gestartet
         if (execvp("/home/evlaleyla/Schreibtisch/BSRN Projekt/helloworld", arguments) < 0) // Verkettung von Prozessen mit exec()
         {
             perror("Fehler beim Ausführen des Programms\n");
-            FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logd
-            atei.log", "a");
+            FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
             fprintf(log_file, "Fehler beim Ausführen des Programms\n");
             fclose(log_file);
             exit(1);
@@ -61,7 +60,7 @@ void starteDaemon()    //Daemon wird gestartet
     if (chdir("/") < 0)
     {
         perror("Fehler beim Verzeichniswechsel\n");
-        FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logDatei.log", "a");
+        FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
         fprintf(log_file, "Fehler beim Verzeichniswechsel\n");
         fclose(log_file);
         exit(1);
@@ -79,7 +78,7 @@ void starteDaemon()    //Daemon wird gestartet
 
     strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
     printf("Daemon wurde gestartet um: %s\n", buffer);
-    FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logDatei.log", "a");
+    FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
     fprintf(log_file, "Daemon wurde gestartet um: %s\n", buffer);
     fclose(log_file);
 }
