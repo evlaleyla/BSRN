@@ -17,7 +17,7 @@ void starteDaemon()    //Daemon wird gestartet
     if (pid < 0)    //Fehler beim Erstellen des Kindprozesses
     {
         perror("Fehler beim Starten des Daemons\n");
-        FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logDatei.log", "a");
+        FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
         fprintf(log_file, "Fehler beim Starten des Daemons\n");
         fclose(log_file);
         exit(1);
@@ -30,7 +30,7 @@ void starteDaemon()    //Daemon wird gestartet
         if (session < 0)    //Fehler beim Erstellen einer Sitzung
         {
             perror("Fehler beim Erstellen einer neuen Sitzung\n");
-            FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logDatei.log", "a");
+            FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logatei.log", "a");
             fprintf(log_file, "Fehler beim Erstellen einer neuen Sitzung\n");
             fclose(log_file);
             exit(1);
@@ -38,7 +38,7 @@ void starteDaemon()    //Daemon wird gestartet
         if (session >= 0)   //Neue Sitzung wurde erstellt. Kindprozess ist Sitzungsführer
         {
             printf("Neue Session wurde erstellt. Die Session-ID %d\n", session);
-            FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logDatei.log", "a");
+            FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logatei.log", "a");
             fprintf(log_file, "Neue Session wurde erstellt\n");
             fclose(log_file);
         }
@@ -47,7 +47,8 @@ void starteDaemon()    //Daemon wird gestartet
         if (execvp("/home/evlaleyla/Schreibtisch/BSRN Projekt/helloworld", arguments) < 0) // Verkettung von Prozessen mit exec()
         {
             perror("Fehler beim Ausführen des Programms\n");
-            FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logDatei.log", "a");
+            FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logd
+            atei.log", "a");
             fprintf(log_file, "Fehler beim Ausführen des Programms\n");
             fclose(log_file);
             exit(1);
@@ -85,11 +86,11 @@ void starteDaemon()    //Daemon wird gestartet
 
 void ueberpruefeDateiVorhanden()    //PID-Datei wird ueberprueft
 {
-    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/pidDatei.txt", "w");
+    FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "w");
     if (!pid_file)
     {
         perror("Fehler beim Finden der PID-Datei\n");
-        FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logDatei.log", "a");
+        FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
         fprintf(log_file, "Fehler beim Finden der PID-Datei\n");
         fclose(log_file);
         exit(1);
@@ -99,7 +100,7 @@ void ueberpruefeDateiVorhanden()    //PID-Datei wird ueberprueft
         fprintf(pid_file, "%d", getpid()); // Schreibe die PID des aktuellen Prozesses in die Datei
     }
     fclose(pid_file);
-    FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logDatei.log", "a");
+    FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
     fprintf(log_file, "\nDatei ist vorhanden.\n");
     fclose(log_file);
 }
@@ -135,8 +136,8 @@ void speichereProzessinformationen()
             unsigned long size, resident, share, text, lib, data, dt;
             sscanf(buffer, "%lu %lu %lu %lu %lu %lu %lu", &size, &resident, &share, &text, &lib, &data, &dt); //Extraktion der Daten in verschiedene Variablen
 
-            // Schreiben der Informationen in die pidDatei.txt Datei
-            FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/pidDatei.txt", "w");
+            // Schreiben der Informationen in die log.txt Datei
+            FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "w");
             if (pid_file != NULL)
             {
                 fprintf(pid_file, "Prozess ID2: %d\n", pid);
@@ -164,7 +165,7 @@ void speichereProzessinformationen()
     {
         printf("Fehler beim Lesen der RAM-Ausnutzung.\n");
     }
-    FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logDatei.log", "a");
+    FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
     fprintf(log_file, "Daemon gestartet (PID: %d)\n", getpid());
     fclose(log_file);
 }
@@ -179,11 +180,11 @@ void ausgebenDerInfos()
 
     if (daemonInformationen == 1)
     {
-        FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/pidDatei.txt", "r");
+        FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
         if (!pid_file)
         {
             printf("Fehler beim Öffnen der Datei.\n");
-            FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logDatei.log", "a");
+            FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
             fprintf(log_file, "Fehler beim Öffnen der Datei.\n");
             fclose(log_file);
             exit(1);
@@ -211,8 +212,8 @@ void daemonAusfuehren()
     int daemonBeenden;
     while (running)
     {
-        // Daemon protokolliert in logDatei.log
-        FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logDatei.log", "a");
+        // Daemon protokolliert in logdatei.log
+        FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
         fprintf(log_file, "Der Daemon laeuft orndungsgemaeß weiter.\n");
         fprintf(log_file, "Daemon schlaeft...\n");
         fclose(log_file);
