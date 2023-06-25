@@ -279,12 +279,12 @@ int main()
     switch (daemonStart)
     {
     case 1:
-        ueberpruefe_datei_vorhanden();
-        starte_daemon();
+        ueberpruefeDateiVorhanden();
+        starteDaemon();
 
-        speichere_Prozessinformationen();
-        ausgeben_der_Infos();
-        daemon_ausfuehren();
+        speichereProzessinformationen();
+        ausgebenDerInfos();
+        daemonAusfuehren();
         break;
     case 0:
         printf("Eingabe gespeichert. Der Daemon wird nicht gestartet.\n");
