@@ -9,7 +9,7 @@
 #include <time.h>
 #include <sys/sysinfo.h>
 
-void starteDaemon()    //Daemon wird gestartet
+void starteDaemon()
 {
     int session;
     pid_t pid = fork(); //Erstelle einen Kindprozess
@@ -83,7 +83,7 @@ void starteDaemon()    //Daemon wird gestartet
     fclose(log_file);
 }
 
-void ueberpruefeDateiVorhanden()    //PID-Datei wird ueberprueft
+void ueberpruefeDateiVorhanden()
 {
     FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/pidDatei.txt", "w");
     if (!pid_file)
