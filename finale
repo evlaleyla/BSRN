@@ -139,9 +139,9 @@ void speichereProzessinformationen()
             FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/pidDatei.txt", "w");
             if (pid_file != NULL)
             {
-                fprintf(pid_file, "Prozess ID2: %d\n", pid);
-                fprintf(pid_file, "Benutzer ID2: %d\n", uid);
-                fprintf(pid_file, "GruppenID2: %d\n", gid);
+                fprintf(pid_file, "Prozess ID: %d\n", pid);
+                fprintf(pid_file, "Benutzer ID: %d\n", uid);
+                fprintf(pid_file, "GruppenID: %d\n", gid);
                 fprintf(pid_file, "Prozessrechte: %o\n", mode);
                 fprintf(pid_file, "RAM Ausnutzung:\n");
                 fprintf(pid_file, "Gesamtgröße der RAM Ausnutzung: %.2f MB\n", (float)size / 1024);
@@ -236,7 +236,6 @@ void daemonAusfuehren()
 int main()
 {
     int daemonStart;
-    int daemonInformationen;
 
     // Menue
     printf("Wollen Sie einen Daemon starten?\nGeben Sie bitte \"1\" ein, damit ein Daemon gestartet wird.\nGeben Sie bitte \"0\" ein, damit kein Daemon gestartet wird.");
