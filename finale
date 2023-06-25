@@ -211,7 +211,7 @@ void daemonAusfuehren()
     int daemonBeenden;
     while (running)
     {
-        // Daemon protokolliert
+        // Daemon protokolliert in logdatei.log
         FILE *log_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/logdatei.log", "a");
         fprintf(log_file, "Der Daemon laeuft orndungsgemaeß weiter.\n");
         fprintf(log_file, "Daemon schlaeft...\n");
@@ -219,12 +219,12 @@ void daemonAusfuehren()
         printf("Warten Sie einen kurzen Moment..\n");
         sleep(5); // Warte für 5 Sekunden
 
-        // Überprüfe, ob der Daemon beendet werden soll
+        // Überprüfung, ob der Daemon beendet werden soll
         printf("Wenn Sie moechte dass der Daemon weiterlaeuft, dann druecken Sie bitte die \"1\". \nWenn Sie moechten dass der Daemon beendet wird, dann geben sie im Terminal bitte \"kill -15 <pid>\" ein.\n");
         scanf("%d", &daemonBeenden);
         if (daemonBeenden == 1)
         {
-            running = 1;
+            running = 1;  //Schleife wird erneut durchlaufen, Daemon läuft weiter
         }
         else
         {
