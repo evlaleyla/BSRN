@@ -190,11 +190,11 @@ void ausgebenDerInfos()
         }
         else
         {
-            char puffer[256]; // angenommene maxiale zeilenlänge
+            char puffer[256]; // angenommene maximale Zeilenlänge
 
-            while (fgets(puffer, sizeof(puffer), pid_file) != NULL)
+            while (fgets(puffer, sizeof(puffer), pid_file) != NULL)  //Zeilen aus der Datei pid_file werden in puffer gelesen
             {
-                printf("%s", puffer);
+                printf("%s", puffer);  //Ausgabe des Puffers in der Konsole
             }
         }
         fclose(pid_file);
