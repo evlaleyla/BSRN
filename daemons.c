@@ -237,7 +237,6 @@ void daemonAusfuehren()
 int main()
 {
     int daemonStart;
-    int daemonInformationen;
 
     // Menue
     printf("Wollen Sie einen Daemon starten?\nGeben Sie bitte \"1\" ein, damit ein Daemon gestartet wird.\nGeben Sie bitte \"0\" ein, damit kein Daemon gestartet wird.");
