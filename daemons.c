@@ -42,7 +42,7 @@ void starteDaemon()    //Daemon wird gestartet
             fprintf(log_file, "Neue Session wurde erstellt\n");
             fclose(log_file);
         }
-        char *arguments[] = {"/home/evlaleyla/Schreibtisch/BSRN Projekt/sonntag.c", NULL};
+        char *arguments[] = {"/home/evlaleyla/Schreibtisch/BSRN Projekt/daemons.c", NULL};
 
         if (execvp("/home/evlaleyla/Schreibtisch/BSRN Projekt/helloworld", arguments) < 0) // Verkettung von Prozessen mit exec()
         {
