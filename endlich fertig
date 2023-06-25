@@ -137,7 +137,7 @@ void ueberpruefe_daemon_status()
     }
 }
 
-void speichereProzessinformationen()
+void speichere_Prozessinformationen()
 {
     pid_t pid = getpid(); // Prozess ID
     uid_t uid = getuid(); // Benutzer ID
@@ -282,7 +282,7 @@ int main()
         ueberpruefe_datei_vorhanden();
         starte_daemon();
 
-        speichereProzessinformationen();
+        speichere_Prozessinformationen();
         ausgeben_der_Infos();
         daemon_ausfuehren();
         break;
