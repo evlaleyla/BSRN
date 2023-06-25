@@ -126,14 +126,14 @@ void speichereProzessinformationen()
     if (statm_fd != -1)
     {
         char buffer[256];
-        ssize_t bytesRead = read(statm_fd, buffer, sizeof(buffer) - 1);
+        ssize_t bytesRead = read(statm_fd, buffer, sizeof(buffer) - 1);  //liest den Inhalt der göffneten Datei in Puffer "buffer"
         close(statm_fd);
 
         if (bytesRead > 0)
         {
-            buffer[bytesRead] = '\0';
+            buffer[bytesRead] = '\0';   //Überprüfung, ob der Puffer als Zeichenkette verwendet werden kann
             unsigned long size, resident, share, text, lib, data, dt;
-            sscanf(buffer, "%lu %lu %lu %lu %lu %lu %lu", &size, &resident, &share, &text, &lib, &data, &dt);
+            sscanf(buffer, "%lu %lu %lu %lu %lu %lu %lu", &size, &resident, &share, &text, &lib, &data, &dt); //Extraktion der Daten in verschiedene Variablen
 
             // Schreiben der Informationen in die log.txt Datei
             FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "w");
