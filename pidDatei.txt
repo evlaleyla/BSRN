@@ -1,0 +1,13 @@
+Prozess ID2: 13529
+Benutzer ID2: 1000
+GruppenID2: 1000
+Prozessrechte: 0
+RAM Ausnutzung:
+Gesamtgröße der RAM Ausnutzung: 0.68 MB
+Resident: 0.31 MB
+Shared: 0.29 MB
+Text: 0.00 MB
+Bibliotheken: 0.00 MB
+Daten: 0.09 MB
+Datenseiten (Dirty): 0.00 MB
+CPU-Zeit: CPU-Zeit: 0.06 Sekunden
