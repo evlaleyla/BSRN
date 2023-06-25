@@ -11,7 +11,7 @@
 #include <syslog.h>
 #include <sys/sysinfo.h>
 
-void starte_daemon()
+void starteDaemon()
 {
     int session;
     pid_t pid = fork(); // Erstelle einen Kindprozess
@@ -85,7 +85,7 @@ void starte_daemon()
     fclose(log_file);
 }
 
-void ueberpruefe_datei_vorhanden()
+void ueberpruefeDateiVorhanden()
 {
     FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "w");
     if (!pid_file)
@@ -106,7 +106,7 @@ void ueberpruefe_datei_vorhanden()
     fclose(log_file);
 }
 
-void ueberpruefe_daemon_status()
+void ueberpruefeDaemonStatus()
 {
     FILE *pid_file = fopen("/home/evlaleyla/Schreibtisch/BSRN Projekt/log.txt", "r");
     if (!pid_file)
@@ -137,7 +137,7 @@ void ueberpruefe_daemon_status()
     }
 }
 
-void speichere_Prozessinformationen()
+void speichereProzessinformationen()
 {
     pid_t pid = getpid(); // Prozess ID
     uid_t uid = getuid(); // Benutzer ID
@@ -204,9 +204,9 @@ void speichere_Prozessinformationen()
     fclose(log_file);
 }
 
-void ausgeben_der_Infos()
+void ausgebenDerInfos()
 {
-    // ueberpruefe_daemon_status();
+    // ueberpruefeDaemonStatus();
     int daemonInformationen;
 
     printf("Möchten Sie Informationen erhalten? Wenn Ja, dann tippen Sie bitte '1', wenn Nein, dann tippen Sie '0'.\n");
@@ -240,7 +240,7 @@ void ausgeben_der_Infos()
     }
 }
 
-void daemon_ausfuehren()
+void daemonAusfuehren()
 {
     int running = 1;
     int daemonBeenden;
