@@ -5,10 +5,10 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <signal.h>
-#include <string.h>
+
 #include <fcntl.h>
 #include <time.h>
-#include <syslog.h>
+
 #include <sys/sysinfo.h>
 
 void starteDaemon()
